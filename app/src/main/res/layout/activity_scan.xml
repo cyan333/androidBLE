@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:id="@+id/activity_scan"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,10 +9,50 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:gravity="center"
+    android:weightSum="12"
     tools:context="com.ecitypower.www.smartbms.ScanActivity">
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!" />
-</RelativeLayout>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:textStyle="bold"
+        android:textSize="60px"
+        android:textColor="#000000"
+        android:text="Bluetooth Devices" />
+
+    <ListView
+        android:id="@+id/bluetoothDevicesList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="6">
+    </ListView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/scanDevicesButton"
+        android:layout_height="0dp"
+        android:layout_width="800px"
+        android:layout_weight="1"
+        android:text="扫描蓝牙设备"
+        android:textSize="55px"
+        android:textAllCaps="false"
+        android:background="@drawable/blue_round_button"
+        android:textColor="#ffffff"
+        android:textColorHighlight="#037eaf" />
+
+    <Button
+        android:id="@+id/continuteWithoutScan"
+        android:layout_height="0dp"
+        android:layout_width="wrap_content"
+        android:layout_weight="1"
+        android:text="Continute Without Bluetooth Connection"
+        android:background="@null"
+        android:textAllCaps="false" />
+
+</LinearLayout>
