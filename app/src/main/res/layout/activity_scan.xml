@@ -22,6 +22,7 @@
         android:textColor="#000000"
         android:text="Bluetooth Devices" />
 
+    <!--Bluetooth Devices List after Scanning-->
     <ListView
         android:id="@+id/bluetoothDevicesList"
         android:layout_width="match_parent"
@@ -34,6 +35,7 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
+    <!--Scan Button-->
     <Button
         android:id="@+id/scanDevicesButton"
         android:layout_height="0dp"
@@ -46,6 +48,7 @@
         android:textColor="#ffffff"
         android:textColorHighlight="#037eaf" />
 
+    <!--Continute Without Scanning Button-->
     <Button
         android:id="@+id/continuteWithoutScan"
         android:layout_height="0dp"
