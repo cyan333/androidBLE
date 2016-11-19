@@ -24,7 +24,7 @@
 
     <!--Bluetooth Devices List after Scanning-->
     <ListView
-        android:id="@+id/bluetoothDevicesList"
+        android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="6">
