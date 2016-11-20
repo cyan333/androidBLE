@@ -22,6 +22,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".TabBarActivity"></activity>
+        <activity android:name=".SettingActivity"></activity>
+        <activity android:name=".StatusActivity"></activity>
     </application>
 
 </manifest>

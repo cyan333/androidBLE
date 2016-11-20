@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,9 +35,6 @@ public class ScanActivity extends ListActivity{
     private static final long SCAN_PERIOD = 10000;
 //    private BluetoothDevice device2;
     private BluetoothGatt mConnectedGatt;
-
-//    ArrayList<BluetoothDevice> BLEDevicesList=new ArrayList<BLENameAddress>();
-//    ArrayAdapter<BLENameAddress> listAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,11 +83,8 @@ public class ScanActivity extends ListActivity{
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         mBluetoothAdapter.stopLeScan(mLeScanCallback);
-//        scanButton.setText("扫描蓝牙设备");
-//        scanButton.setEnabled(true);
-//        Log.i("debug","device2" + device2.getName());
-//        mConnectedGatt = device2.connectGatt(this, false, mGattCallback);
-//        connectedBLE = BLEDevicesList.get(position);
+        scanButton.setText("扫描蓝牙设备");
+        scanButton.setEnabled(true);
         final BluetoothDevice connectedDevice = mLeDeviceListAdapter.getDevice(position);
         mConnectedGatt = connectedDevice.connectGatt(this, false, mGattCallback);
 
@@ -104,21 +99,27 @@ public class ScanActivity extends ListActivity{
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
-                Log.d("debug", "aaaa");
                 gatt.discoverServices();
+//                Intent k = new Intent(ScanActivity.this, TabBarActivity.class);
+//                startActivity(k);
             }
 
-            Log.d("debug", "Connection State Change: "+status+" -> " + newState);
-
+//            Log.d("debug", "Connection State Change: "+status+" -> " + newState);
         }
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-            Log.d("debug", "Services Discovered: "+status);
-
+            if (status == 0){
+                StatusActivity.gatt = gatt;
+                Intent nextActivity = new Intent(ScanActivity.this, TabBarActivity.class);
+                startActivity(nextActivity);
+            }
         }
-
     };
+
+    ////////////////////////////////////
+    ///////////Scan LE Device///////////
+    ////////////////////////////////////
 
     private void scanLeDevice() {
         // Stops scanning after a pre-defined scan period.
@@ -130,6 +131,7 @@ public class ScanActivity extends ListActivity{
                 scanButton.setEnabled(true);
             }
         }, SCAN_PERIOD);
+        Log.i("debug","start scanning");
         mBluetoothAdapter.startLeScan(mLeScanCallback);
     }
 
