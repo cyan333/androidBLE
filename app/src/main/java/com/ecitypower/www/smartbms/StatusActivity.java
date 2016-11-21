@@ -89,6 +89,10 @@ public class StatusActivity extends Activity {
 
         BLEDevicesList.setAdapter(mLeDeviceListAdapter);
 
+//        BLEDevicesList.setOnClickListener(new View.OnClickListener(){
+//            
+//        });
+
         final AlertDialog BLEAScanAlertDialog = BLEAScanAlertDialogBuilder
                 .setView(BLEDevicesList)
                 .setTitle("Select Bluetooth Device")
@@ -105,11 +109,8 @@ public class StatusActivity extends Activity {
                 scanButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
-                        // TODO Do something
                         scanButton.setText("Scanning");
                         scanButton.setEnabled(false);
-                        //Dismiss once everything is OK.
                         scanLeDevice();
 //                        d.dismiss();
                         Log.i("debug","CLicked!!!");
