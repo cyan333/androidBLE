@@ -15,15 +15,19 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ScanActivity">
+        <activity android:name=".TabBarActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TabBarActivity"></activity>
-        <activity android:name=".SettingActivity"></activity>
+        <activity android:name=".ScanActivity"></activity>
+
+
+        <activity android:name=".SettingActivity">
+
+        </activity>
         <activity android:name=".StatusActivity"></activity>
     </application>
 

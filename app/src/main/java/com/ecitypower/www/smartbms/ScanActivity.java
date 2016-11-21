@@ -7,7 +7,6 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,7 +31,9 @@ public class ScanActivity extends ListActivity{
 //    private BLENameAddress connectedBLE;
     private Handler mHandler;
     private Button scanButton;
+
     private static final long SCAN_PERIOD = 10000;
+
 //    private BluetoothDevice device2;
     private BluetoothGatt mConnectedGatt;
 
@@ -40,16 +41,21 @@ public class ScanActivity extends ListActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
+
+//        Intent nextActivity = new Intent(ScanActivity.this, TabBarActivity.class);
+//            startActivity(nextActivity);
+
+
+
         mHandler = new Handler();
 
         scanButton = (Button) findViewById(R.id.scanDevicesButton);
         scanButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Log.i("debug", "Scan button Clicked");
-                scanButton.setText("扫描中...");
-                scanButton.setEnabled(false);
-//                new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1; 
-                scanLeDevice();
+            Log.i("debug", "Scan button Clicked");
+            scanButton.setText("扫描中...");
+            scanButton.setEnabled(false);
+            scanLeDevice();
             }
         });
 
@@ -111,8 +117,8 @@ public class ScanActivity extends ListActivity{
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             if (status == 0){
                 StatusActivity.gatt = gatt;
-                Intent nextActivity = new Intent(ScanActivity.this, TabBarActivity.class);
-                startActivity(nextActivity);
+//                Intent nextActivity = new Intent(ScanActivity.this, TabBarActivity.class);
+//                startActivity(nextActivity);
             }
         }
     };
@@ -120,7 +126,7 @@ public class ScanActivity extends ListActivity{
     ////////////////////////////////////
     ///////////Scan LE Device///////////
     ////////////////////////////////////
-
+    //copied
     private void scanLeDevice() {
         // Stops scanning after a pre-defined scan period.
         mHandler.postDelayed(new Runnable() {
@@ -135,7 +141,9 @@ public class ScanActivity extends ListActivity{
         mBluetoothAdapter.startLeScan(mLeScanCallback);
     }
 
-    // Device scan callback.
+    ///////////////////////////////
+    ///// Device scan callback.////
+    ///////////////////////////////
     private BluetoothAdapter.LeScanCallback mLeScanCallback =
             new BluetoothAdapter.LeScanCallback() {
                 @Override
@@ -152,7 +160,8 @@ public class ScanActivity extends ListActivity{
                 }
             };
 
-    //Custome Adaptor
+    ///////////////////////////////
+    ///////Custome Adaptor/////////
     // Adapter for holding devices found through scanning.
     private class LeDeviceListAdapter extends BaseAdapter {
         private ArrayList<BluetoothDevice> mLeDevices;

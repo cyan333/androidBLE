@@ -32,16 +32,14 @@ public class TabBarActivity extends TabActivity implements OnTabChangeListener{
         /************* TAB1 ************/
         // Create  Intents to launch an Activity for the tab (to be reused)
         intent = new Intent().setClass(this, StatusActivity.class);
-        spec = tabHost.newTabSpec("First").setIndicator("Status")
-                .setContent(intent);
+        spec = tabHost.newTabSpec("First").setIndicator("Status").setContent(intent);
 
         //Add intent to tab
         tabHost.addTab(spec);
 
         /************* TAB2 ************/
         intent = new Intent().setClass(this, SettingActivity.class);
-        spec = tabHost.newTabSpec("Second").setIndicator("Setting")
-                .setContent(intent);
+        spec = tabHost.newTabSpec("Second").setIndicator("Setting").setContent(intent);
         tabHost.addTab(spec);
 
 //        // Set drawable images to tab
