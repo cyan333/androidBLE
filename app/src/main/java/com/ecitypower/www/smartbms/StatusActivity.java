@@ -7,12 +7,14 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -29,12 +31,17 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import static android.content.ContentValues.TAG;
+
 /**
  * Created by Fangming on 11/20/16.
  */
 
 public class StatusActivity extends Activity {
-    public static BluetoothGatt gatt;
+//    public static BluetoothGatt gatt;
+
+    /* GATT */
+    private BluetoothGatt gatt;
 
     /* Service UUID */
     private static final UUID BLE_SERVICE_UUID = UUID.fromString("0000ffe0-0000-1000-8000-00805f9b34fb");
@@ -42,14 +49,19 @@ public class StatusActivity extends Activity {
     /* Characteristic UUID */
     private static final UUID BLE_CHAR_UUID = UUID.fromString("0000ffe1-0000-1000-8000-00805f9b34fb");
 
+    /* Descriptor */
+    private static final UUID BLE_DESCRIPTOR_1_UUID = UUID.fromString("00002901-0000-1000-8000-00805f9b34fb");
+    private static final UUID BLE_DESCRIPTOR_2_UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
+
     private BluetoothGattCharacteristic characteristic;
 
     private BluetoothAdapter mBluetoothAdapter;
     private Handler mHandler;
     private LeDeviceListAdapter mLeDeviceListAdapter;
 
-    /* Button - Scan Button */
+    /* Buttons */
     private Button scanButton;
+    private Button LEDButton;
 
     /* GATT */
     private BluetoothGatt mConnectedGatt;
@@ -144,25 +156,21 @@ public class StatusActivity extends Activity {
         });
         BLEAScanAlertDialog.show();
 
-
-//        characteristic = gatt.getService(BLE_SERVICE_UUID).getCharacteristic(BLE_CHAR_UUID);
-//
-//        scanButton = (Button) findViewById(R.id.button);
-//        scanButton.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                if (toggle == 0){
-//                    characteristic.setValue("1");
-//                    gatt.writeCharacteristic(characteristic);
-//                    toggle = 1;
-//                }
-//                else {
-//                    characteristic.setValue("0");
-//                    gatt.writeCharacteristic(characteristic);
-//                    toggle = 0;
-//                }
-//            }
-//        });
-//        gatt.readCharacteristic(characteristic);
+        LEDButton = (Button) findViewById(R.id.button);
+        LEDButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (toggle == 0){
+                    characteristic.setValue("1");
+                    gatt.writeCharacteristic(characteristic);
+                    toggle = 1;
+                }
+                else {
+                    characteristic.setValue("0");
+                    gatt.writeCharacteristic(characteristic);
+                    toggle = 0;
+                }
+            }
+        });
 
     }
 
@@ -195,7 +203,7 @@ public class StatusActivity extends Activity {
                         @Override
                         public void run() {
                             if (device.getName() != null) {
-                                    Log.i("debug","Device Name: " + device.getName());
+//                                    Log.i("debug","Device Name: " + device.getName());
                                     mLeDeviceListAdapter.addDevice(device);
                                     mLeDeviceListAdapter.notifyDataSetChanged();
                                 }
@@ -205,7 +213,7 @@ public class StatusActivity extends Activity {
             };
 
     //////////////////////////////////
-    ///// Connect Device Call Back////
+    ///////// GATT Call Back//////////
     //////////////////////////////////
     private BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
         @Override
@@ -214,18 +222,84 @@ public class StatusActivity extends Activity {
                 gatt.discoverServices();
                 Log.i("debug", "Did connect device");
             }
-
-//            Log.d("debug", "Connection State Change: "+status+" -> " + newState);
         }
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+
             Log.i("debug", "Connection Service State : "+ status);
-            if (status == 0){
+            if (status != 0){
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+                        Toast.makeText(StatusActivity.this, "Your message to main thread", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+            else {
+                characteristic = gatt.getService(BLE_SERVICE_UUID).getCharacteristic(BLE_CHAR_UUID);
+                setNotify(gatt);
+                StatusActivity.this.gatt = gatt;
                 BLEAScanAlertDialog.dismiss();
             }
         }
+
+        private void setNotify(BluetoothGatt gatt) {
+            Log.i("debug", "DDD");
+//            //Enable local notifications
+//            gatt.setCharacteristicNotification(characteristic, true);
+//            //Enabled remote notifications
+//            BluetoothGattDescriptor desc = characteristic.getDescriptor(BLE_DESCRIPTOR_2_UUID);
+//            desc.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+//            gatt.writeDescriptor(desc);
+
+            gatt.readCharacteristic(characteristic);
+
+        }
+
+        @Override
+        public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+            Log.i("debug","Mesg::" + characteristic.getValue());
+
+//            Enable local notifications
+            gatt.setCharacteristicNotification(characteristic, true);
+            //Enabled remote notifications
+            BluetoothGattDescriptor desc = characteristic.getDescriptor(BLE_DESCRIPTOR_1_UUID);
+            desc.setValue(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE);
+            gatt.writeDescriptor(desc);
+
+//            if (BLE_CHAR_UUID.equals(characteristic.getUuid())) {
+//
+//            }
+            //After reading the initial value, next we enable notifications
+//            setNotify(gatt);
+        }
+
+        @Override
+        public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+            Log.i("debug","changed");
+            int hi = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0);
+            Log.i("debug", Integer.toString(hi));
+        }
+
+        @Override
+        public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                Log.i(TAG, "Callback: Wrote GATT Descriptor successfully.");
+            }
+            else{
+                Log.i(TAG, "Callback: Error writing GATT Descriptor: "+ status);
+            }
+//            descriptorWriteQueue.remove();  //pop the item that we just finishing writing
+//            //if there is more to write, do it!
+//            if(descriptorWriteQueue.size() > 0)
+//                mBluetoothGatt.writeDescriptor(descriptorWriteQueue.element());
+//            else if(readCharacteristicQueue.size() > 0)
+//                mBluetoothGatt.readCharacteristic(readQueue.element());
+        };
     };
+
+
 
     ////////////////////////////////////////////////////////
     /////////////////////Custome Adaptor////////////////////
@@ -291,17 +365,9 @@ public class StatusActivity extends Activity {
             return view;
         }
     }
-//
-//    @Override
-//    public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-//
-//        //Enable local notifications
-//        gatt.setCharacteristicNotification(characteristic, true);
-//        //Enabled remote notifications
-//        BluetoothGattDescriptor desc = characteristic.getDescriptor(CONFIG_DESCRIPTOR);
-//        desc.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-//        gatt.writeDescriptor(desc);
-//
-//    }
+
+
+
+
 
 }

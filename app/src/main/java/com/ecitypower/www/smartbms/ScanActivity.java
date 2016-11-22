@@ -116,7 +116,7 @@ public class ScanActivity extends ListActivity{
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             if (status == 0){
-                StatusActivity.gatt = gatt;
+//                StatusActivity.gatt = gatt;
 //                Intent nextActivity = new Intent(ScanActivity.this, TabBarActivity.class);
 //                startActivity(nextActivity);
             }
