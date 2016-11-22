@@ -5,8 +5,10 @@ import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothProfile;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -40,10 +43,21 @@ public class StatusActivity extends Activity {
     private static final UUID BLE_CHAR_UUID = UUID.fromString("0000ffe1-0000-1000-8000-00805f9b34fb");
 
     private BluetoothGattCharacteristic characteristic;
-    private int toggle = 0;
+
     private BluetoothAdapter mBluetoothAdapter;
     private Handler mHandler;
     private LeDeviceListAdapter mLeDeviceListAdapter;
+
+    /* Button - Scan Button */
+    private Button scanButton;
+
+    /* GATT */
+    private BluetoothGatt mConnectedGatt;
+
+    /* Alert Diaglo */
+    private AlertDialog BLEAScanAlertDialog;
+
+    private int toggle = 0;
 
     //define Final Variable
     private static final long SCAN_PERIOD = 10000;
@@ -85,15 +99,24 @@ public class StatusActivity extends Activity {
         //////////////////////////
         AlertDialog.Builder BLEAScanAlertDialogBuilder = new AlertDialog.Builder(StatusActivity.this);
 
+        //Alert Dialog --> List - BLE Device List
         ListView BLEDevicesList = new ListView(this);
-
         BLEDevicesList.setAdapter(mLeDeviceListAdapter);
 
-//        BLEDevicesList.setOnClickListener(new View.OnClickListener(){
-//            
-//        });
+        //Device List Click Listener
+        BLEDevicesList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                  int position, long id) {
+                mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                scanButton.setText("Scan");
+                scanButton.setEnabled(true);
+                final BluetoothDevice connectedDevice = mLeDeviceListAdapter.getDevice(position);
+                mConnectedGatt = connectedDevice.connectGatt(StatusActivity.this, false, mGattCallback);
+            }
+        });
 
-        final AlertDialog BLEAScanAlertDialog = BLEAScanAlertDialogBuilder
+        BLEAScanAlertDialog = BLEAScanAlertDialogBuilder
                 .setView(BLEDevicesList)
                 .setTitle("Select Bluetooth Device")
                 .setPositiveButton("Scan", null) //Set to null. We override the onclick
@@ -101,11 +124,12 @@ public class StatusActivity extends Activity {
                 .setCancelable(false)
                 .create();
 
+        //Alert Dialog --> Scan Button
         BLEAScanAlertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
 
-                final Button scanButton = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                scanButton = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
                 scanButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -152,8 +176,8 @@ public class StatusActivity extends Activity {
             @Override
             public void run() {
                 mBluetoothAdapter.stopLeScan(mLeScanCallback);
-//                scanButton.setText("扫描蓝牙设备");
-//                scanButton.setEnabled(true);
+                scanButton.setText("Scan");
+                scanButton.setEnabled(true);
             }
         }, SCAN_PERIOD);
         Log.i("debug","SSSSSSStart scanning");
@@ -170,7 +194,6 @@ public class StatusActivity extends Activity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                           // Log.i("debug", "dddd");
                             if (device.getName() != null) {
                                     Log.i("debug","Device Name: " + device.getName());
                                     mLeDeviceListAdapter.addDevice(device);
@@ -180,6 +203,29 @@ public class StatusActivity extends Activity {
                     });
                 }
             };
+
+    //////////////////////////////////
+    ///// Connect Device Call Back////
+    //////////////////////////////////
+    private BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
+        @Override
+        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+            if (newState == BluetoothProfile.STATE_CONNECTED) {
+                gatt.discoverServices();
+                Log.i("debug", "Did connect device");
+            }
+
+//            Log.d("debug", "Connection State Change: "+status+" -> " + newState);
+        }
+
+        @Override
+        public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+            Log.i("debug", "Connection Service State : "+ status);
+            if (status == 0){
+                BLEAScanAlertDialog.dismiss();
+            }
+        }
+    };
 
     ////////////////////////////////////////////////////////
     /////////////////////Custome Adaptor////////////////////
