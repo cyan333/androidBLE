@@ -259,9 +259,8 @@ public class StatusActivity extends Activity {
 
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-            Log.i("debug","Mesg::" + characteristic.getValue());
 
-//            Enable local notifications
+            //Enable local notifications
             gatt.setCharacteristicNotification(characteristic, true);
             //Enabled remote notifications
             BluetoothGattDescriptor desc = characteristic.getDescriptor(BLE_DESCRIPTOR_1_UUID);
