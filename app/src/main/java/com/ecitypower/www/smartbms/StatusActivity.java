@@ -12,9 +12,9 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -74,6 +75,10 @@ public class StatusActivity extends Activity {
     //define Final Variable
     private static final long SCAN_PERIOD = 10000;
 
+    private BluetoothDevice connectedDevice;
+
+    private TextView connectionFail;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,25 +116,25 @@ public class StatusActivity extends Activity {
         //////////////////////////
         AlertDialog.Builder BLEAScanAlertDialogBuilder = new AlertDialog.Builder(StatusActivity.this);
 
-        //Alert Dialog --> List - BLE Device List
-        ListView BLEDevicesList = new ListView(this);
-        BLEDevicesList.setAdapter(mLeDeviceListAdapter);
-
-        //Device List Click Listener
-        BLEDevicesList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                  int position, long id) {
-                mBluetoothAdapter.stopLeScan(mLeScanCallback);
-                scanButton.setText("Scan");
-                scanButton.setEnabled(true);
-                final BluetoothDevice connectedDevice = mLeDeviceListAdapter.getDevice(position);
-                mConnectedGatt = connectedDevice.connectGatt(StatusActivity.this, false, mGattCallback);
-            }
-        });
+//        //Alert Dialog --> List - BLE Device List
+//        ListView BLEDevicesList = new ListView(this);
+//        BLEDevicesList.setAdapter(mLeDeviceListAdapter);
+//
+//        //Device List Click Listener
+//        BLEDevicesList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view,
+//                                  int position, long id) {
+//                mBluetoothAdapter.stopLeScan(mLeScanCallback);
+//                scanButton.setText("Scan");
+//                scanButton.setEnabled(true);
+//                connectedDevice = mLeDeviceListAdapter.getDevice(position);
+//                mConnectedGatt = connectedDevice.connectGatt(StatusActivity.this, false, mGattCallback);
+//            }
+//        });
 
         BLEAScanAlertDialog = BLEAScanAlertDialogBuilder
-                .setView(BLEDevicesList)
+                .setView(makeAlertDialog())
                 .setTitle("Select Bluetooth Device")
                 .setPositiveButton("Scan", null) //Set to null. We override the onclick
                 .setNegativeButton("Cancel", null)
@@ -172,6 +177,49 @@ public class StatusActivity extends Activity {
             }
         });
 
+    }
+    //Oncreate End
+
+    //////////////////////////////////////////////////
+    ///////////Scan BLE Alert Dialog Layout///////////
+    //////////////////////////////////////////////////
+    private LinearLayout makeAlertDialog () {
+        LinearLayout layout = new LinearLayout(this);
+        LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setLayoutParams(parms);
+
+        connectionFail = new TextView(this);
+        connectionFail.setText("");
+        connectionFail.setTextColor(Color.rgb(255,77,77));
+        connectionFail.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        connectionFail.setTextSize(15);
+
+        //Alert Dialog --> List - BLE Device List
+        ListView BLEDevicesList = new ListView(this);
+        BLEDevicesList.setAdapter(mLeDeviceListAdapter);
+
+        //Device List Click Listener
+        BLEDevicesList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                scanButton.setText("Scan");
+                scanButton.setEnabled(true);
+                connectedDevice = mLeDeviceListAdapter.getDevice(position);
+                mConnectedGatt = connectedDevice.connectGatt(StatusActivity.this, false, mGattCallback);
+            }
+        });
+
+        LinearLayout.LayoutParams connectionFailParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        connectionFailParams.topMargin = 10;
+        connectionFailParams.bottomMargin = 5;
+        layout.addView(connectionFail,connectionFailParams);
+        layout.addView(BLEDevicesList);
+
+        return layout;
     }
 
     ////////////////////////////////////
@@ -229,12 +277,19 @@ public class StatusActivity extends Activity {
 
             Log.i("debug", "Connection Service State : "+ status);
             if (status != 0){
-                Handler h = new Handler(Looper.getMainLooper());
-                h.post(new Runnable() {
+//                Handler h = new Handler(Looper.getMainLooper());
+//                h.post(new Runnable() {
+//                    public void run() {
+//                        Toast.makeText(StatusActivity.this, "Your message to main thread", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+                runOnUiThread(new Runnable() {
+                    @Override
                     public void run() {
-                        Toast.makeText(StatusActivity.this, "Your message to main thread", Toast.LENGTH_SHORT).show();
+                        connectionFail.setText("Connection Failed");
                     }
                 });
+
             }
             else {
                 characteristic = gatt.getService(BLE_SERVICE_UUID).getCharacteristic(BLE_CHAR_UUID);
