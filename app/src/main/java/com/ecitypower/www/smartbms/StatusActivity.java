@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 import static android.content.ContentValues.TAG;
@@ -79,10 +80,15 @@ public class StatusActivity extends Activity {
 
     private TextView connectionFail;
 
+    private String savedAddress;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_status);
+
+        //Utils.savePreferences("hi","name1",this);
+        Utils.loadPreferences(this);
 
         /* Initialize */
         mHandler = new Handler();
@@ -116,23 +122,6 @@ public class StatusActivity extends Activity {
         //////////////////////////
         AlertDialog.Builder BLEAScanAlertDialogBuilder = new AlertDialog.Builder(StatusActivity.this);
 
-//        //Alert Dialog --> List - BLE Device List
-//        ListView BLEDevicesList = new ListView(this);
-//        BLEDevicesList.setAdapter(mLeDeviceListAdapter);
-//
-//        //Device List Click Listener
-//        BLEDevicesList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view,
-//                                  int position, long id) {
-//                mBluetoothAdapter.stopLeScan(mLeScanCallback);
-//                scanButton.setText("Scan");
-//                scanButton.setEnabled(true);
-//                connectedDevice = mLeDeviceListAdapter.getDevice(position);
-//                mConnectedGatt = connectedDevice.connectGatt(StatusActivity.this, false, mGattCallback);
-//            }
-//        });
-
         BLEAScanAlertDialog = BLEAScanAlertDialogBuilder
                 .setView(makeAlertDialog())
                 .setTitle("Select Bluetooth Device")
@@ -159,7 +148,19 @@ public class StatusActivity extends Activity {
                 });
             }
         });
-        BLEAScanAlertDialog.show();
+        ////////////////////////////////////////////////////////
+        ///////////Save and Load Saved Device Address///////////
+        ////////////////////////////////////////////////////////
+
+        HashMap<String, String> savedAddressName = new HashMap<>();
+        savedAddress = savedAddressName.get(Utils.PREF_BLEADDRESS);
+        if (savedAddress.equals("")){
+            BLEAScanAlertDialog.show();
+        }
+        else {
+
+        }
+
 
         LEDButton = (Button) findViewById(R.id.button);
         LEDButton.setOnClickListener(new View.OnClickListener() {
@@ -250,11 +251,18 @@ public class StatusActivity extends Activity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (device.getName() != null) {
-//                                    Log.i("debug","Device Name: " + device.getName());
-                                    mLeDeviceListAdapter.addDevice(device);
-                                    mLeDeviceListAdapter.notifyDataSetChanged();
+                            if (device.getName() != null && savedAddress.equals("")) {
+                                mLeDeviceListAdapter.addDevice(device);
+                                mLeDeviceListAdapter.notifyDataSetChanged();
+                            }
+                            else if (device.getName() != null){
+                                if (savedAddress.equals(device.getAddress())){
+                                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                                    connectedDevice = device;
+                                    mConnectedGatt = device.connectGatt(StatusActivity.this, false, mGattCallback);
                                 }
+
+                            }
                         }
                     });
                 }
@@ -274,42 +282,23 @@ public class StatusActivity extends Activity {
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-
             Log.i("debug", "Connection Service State : "+ status);
             if (status != 0){
-//                Handler h = new Handler(Looper.getMainLooper());
-//                h.post(new Runnable() {
-//                    public void run() {
-//                        Toast.makeText(StatusActivity.this, "Your message to main thread", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         connectionFail.setText("Connection Failed");
                     }
                 });
-
             }
             else {
                 characteristic = gatt.getService(BLE_SERVICE_UUID).getCharacteristic(BLE_CHAR_UUID);
-                setNotify(gatt);
+                gatt.readCharacteristic(characteristic);
                 StatusActivity.this.gatt = gatt;
+                Utils.savePreferences(connectedDevice.getAddress(),connectedDevice.getName(),StatusActivity.this);
                 BLEAScanAlertDialog.dismiss();
             }
-        }
-
-        private void setNotify(BluetoothGatt gatt) {
-            Log.i("debug", "DDD");
-//            //Enable local notifications
-//            gatt.setCharacteristicNotification(characteristic, true);
-//            //Enabled remote notifications
-//            BluetoothGattDescriptor desc = characteristic.getDescriptor(BLE_DESCRIPTOR_2_UUID);
-//            desc.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-//            gatt.writeDescriptor(desc);
-
-            gatt.readCharacteristic(characteristic);
-
         }
 
         @Override
@@ -321,12 +310,6 @@ public class StatusActivity extends Activity {
             BluetoothGattDescriptor desc = characteristic.getDescriptor(BLE_DESCRIPTOR_1_UUID);
             desc.setValue(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE);
             gatt.writeDescriptor(desc);
-
-//            if (BLE_CHAR_UUID.equals(characteristic.getUuid())) {
-//
-//            }
-            //After reading the initial value, next we enable notifications
-//            setNotify(gatt);
         }
 
         @Override
@@ -344,12 +327,6 @@ public class StatusActivity extends Activity {
             else{
                 Log.i(TAG, "Callback: Error writing GATT Descriptor: "+ status);
             }
-//            descriptorWriteQueue.remove();  //pop the item that we just finishing writing
-//            //if there is more to write, do it!
-//            if(descriptorWriteQueue.size() > 0)
-//                mBluetoothGatt.writeDescriptor(descriptorWriteQueue.element());
-//            else if(readCharacteristicQueue.size() > 0)
-//                mBluetoothGatt.readCharacteristic(readQueue.element());
         };
     };
 
