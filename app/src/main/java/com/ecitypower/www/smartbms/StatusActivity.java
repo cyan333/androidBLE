@@ -152,13 +152,13 @@ public class StatusActivity extends Activity {
         ///////////Save and Load Saved Device Address///////////
         ////////////////////////////////////////////////////////
 
-        HashMap<String, String> savedAddressName = new HashMap<>();
+        HashMap<String, String> savedAddressName = Utils.loadPreferences(this);
         savedAddress = savedAddressName.get(Utils.PREF_BLEADDRESS);
         if (savedAddress.equals("")){
             BLEAScanAlertDialog.show();
         }
         else {
-
+            scanLeDevice();
         }
 
 
@@ -233,8 +233,17 @@ public class StatusActivity extends Activity {
             @Override
             public void run() {
                 mBluetoothAdapter.stopLeScan(mLeScanCallback);
-                scanButton.setText("Scan");
-                scanButton.setEnabled(true);
+                if (savedAddress.equals("")){
+                    scanButton.setText("Scan");
+                    scanButton.setEnabled(true);
+                }
+                else {
+                    BLEAScanAlertDialog.show();
+                    connectionFail.setText("Cannot find previous device.");
+                }
+
+
+
             }
         }, SCAN_PERIOD);
         Log.i("debug","SSSSSSStart scanning");
