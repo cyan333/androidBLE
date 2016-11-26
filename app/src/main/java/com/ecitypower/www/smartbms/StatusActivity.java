@@ -98,7 +98,6 @@ public class StatusActivity extends Activity {
         mLeDeviceListAdapter = new LeDeviceListAdapter();
 
         loading = (SpinKitView) findViewById(R.id.loading);
-        loading.setVisibility(loading.VISIBLE);
 
         //Bluetooth permission request.
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -164,6 +163,7 @@ public class StatusActivity extends Activity {
             BLEAScanAlertDialog.show();
         }
         else {
+            loading.setVisibility(loading.VISIBLE);
             scanLeDevice();
         }
 
@@ -244,6 +244,7 @@ public class StatusActivity extends Activity {
                     scanButton.setEnabled(true);
                 }
                 else if (connectedDevice == null) {
+                    loading.setVisibility(loading.INVISIBLE);
                     BLEAScanAlertDialog.show();
                     connectionFail.setText("Cannot find previous device.");
                 }
@@ -273,6 +274,7 @@ public class StatusActivity extends Activity {
                             else if (device.getName() != null){
                                 if (savedAddress.equals(device.getAddress())){
                                     mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                                    loading.setVisibility(loading.INVISIBLE);
                                     connectedDevice = device;
                                     mConnectedGatt = device.connectGatt(StatusActivity.this, false, mGattCallback);
                                 }
