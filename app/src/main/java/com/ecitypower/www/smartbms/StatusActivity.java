@@ -12,7 +12,6 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
@@ -28,6 +27,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.github.ybq.android.spinkit.SpinKitView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,6 +83,8 @@ public class StatusActivity extends Activity {
 
     private String savedAddress;
 
+    private SpinKitView loading;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +96,9 @@ public class StatusActivity extends Activity {
         /* Initialize */
         mHandler = new Handler();
         mLeDeviceListAdapter = new LeDeviceListAdapter();
+
+        loading = (SpinKitView) findViewById(R.id.loading);
+        loading.setVisibility(loading.VISIBLE);
 
         //Bluetooth permission request.
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -193,7 +199,7 @@ public class StatusActivity extends Activity {
 
         connectionFail = new TextView(this);
         connectionFail.setText("");
-        connectionFail.setTextColor(Color.rgb(255,77,77));
+        connectionFail.setTextColor(ContextCompat.getColor(this, R.color.colorWarningRed));
         connectionFail.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         connectionFail.setTextSize(15);
 
@@ -237,7 +243,7 @@ public class StatusActivity extends Activity {
                     scanButton.setText("Scan");
                     scanButton.setEnabled(true);
                 }
-                else {
+                else if (connectedDevice == null) {
                     BLEAScanAlertDialog.show();
                     connectionFail.setText("Cannot find previous device.");
                 }
