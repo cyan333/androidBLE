@@ -1,6 +1,5 @@
 package com.ecitypower.www.smartbms;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -15,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,12 +35,13 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import static android.content.ContentValues.TAG;
+import static android.content.Context.BLUETOOTH_SERVICE;
 
 /**
  * Created by Fangming on 11/20/16.
  */
 
-public class StatusActivity extends Activity {
+public class StatusActivity extends Fragment {
 //    public static BluetoothGatt gatt;
 
     /* GATT */
@@ -85,47 +86,56 @@ public class StatusActivity extends Activity {
 
     private SpinKitView loading;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_status);
+    public static StatusActivity newInstance() {
 
-        //Utils.savePreferences("hi","name1",this);
-        Utils.loadPreferences(this);
+        StatusActivity f = new StatusActivity();
+//        Bundle b = new Bundle();
+//        b.putString("msg", text);
+//        f.setArguments(b);
+
+        return f;
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+//    @Override
+//    public void onCreate(Bundle savedInstanceState) {
+        View statusView = inflater.inflate(R.layout.activity_status, container, false);
 
         /* Initialize */
         mHandler = new Handler();
         mLeDeviceListAdapter = new LeDeviceListAdapter();
 
-        loading = (SpinKitView) findViewById(R.id.loading);
+        loading = (SpinKitView) statusView.findViewById(R.id.loading);
 
         //Bluetooth permission request.
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[] { android.Manifest.permission.ACCESS_COARSE_LOCATION }, 1);
+            ActivityCompat.requestPermissions(getActivity(), new String[] { android.Manifest.permission.ACCESS_COARSE_LOCATION }, 1);
         }
 
         // Use this check to determine whether BLE is supported on the device.  Then you can
         // selectively disable BLE-related features.
-        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            Toast.makeText(this, "BLE not supported.", Toast.LENGTH_SHORT).show();
-            finish();
+        if (!getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            Toast.makeText(getActivity(), "BLE not supported.", Toast.LENGTH_SHORT).show();
+            getActivity().finish();
         }
         final BluetoothManager bluetoothManager =
-                (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
+                (BluetoothManager) getActivity().getSystemService(BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
 
         // Checks if Bluetooth is supported on the device.
         if (mBluetoothAdapter == null) {
-            Toast.makeText(this, "Bluetooth not supported", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
+            Toast.makeText(getActivity(), "Bluetooth not supported", Toast.LENGTH_SHORT).show();
+            getActivity().finish();
+//            return;
         }
 
         //////////////////////////
         ///////Alert Dialog///////
         //////////////////////////
-        AlertDialog.Builder BLEAScanAlertDialogBuilder = new AlertDialog.Builder(StatusActivity.this);
+        AlertDialog.Builder BLEAScanAlertDialogBuilder = new AlertDialog.Builder(getActivity());
 
         BLEAScanAlertDialog = BLEAScanAlertDialogBuilder
                 .setView(makeAlertDialog())
@@ -148,7 +158,7 @@ public class StatusActivity extends Activity {
         ///////////Save and Load Saved Device Address///////////
         ////////////////////////////////////////////////////////
 
-        HashMap<String, String> savedAddressName = Utils.loadPreferences(this);
+        HashMap<String, String> savedAddressName = Utils.loadPreferences(getActivity());
         savedAddress = savedAddressName.get(Utils.PREF_BLEADDRESS);
         if (savedAddress.equals("")){
             BLEAScanAlertDialog.show();
@@ -159,7 +169,7 @@ public class StatusActivity extends Activity {
         }
 
 
-        LEDButton = (Button) findViewById(R.id.button);
+        LEDButton = (Button) statusView.findViewById(R.id.button);
         LEDButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (toggle == 0){
@@ -175,6 +185,7 @@ public class StatusActivity extends Activity {
             }
         });
 
+        return statusView;
     }
     //Oncreate End
 
@@ -182,20 +193,20 @@ public class StatusActivity extends Activity {
     ///////////Scan BLE Alert Dialog Layout///////////
     //////////////////////////////////////////////////
     private LinearLayout makeAlertDialog () {
-        LinearLayout layout = new LinearLayout(this);
+        LinearLayout layout = new LinearLayout(getActivity());
         LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setLayoutParams(parms);
 
-        connectionFail = new TextView(this);
+        connectionFail = new TextView(getActivity());
         connectionFail.setText("");
-        connectionFail.setTextColor(ContextCompat.getColor(this, R.color.colorWarningRed));
+        connectionFail.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorWarningRed));
         connectionFail.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         connectionFail.setTextSize(15);
 
         //Alert Dialog --> List - BLE Device List
-        ListView BLEDevicesList = new ListView(this);
+        ListView BLEDevicesList = new ListView(getActivity());
         BLEDevicesList.setAdapter(mLeDeviceListAdapter);
 
         //Device List Click Listener
@@ -207,7 +218,7 @@ public class StatusActivity extends Activity {
                 scanButton.setText("Scan");
                 scanButton.setEnabled(true);
                 connectedDevice = mLeDeviceListAdapter.getDevice(position);
-                mConnectedGatt = connectedDevice.connectGatt(StatusActivity.this, false, mGattCallback);
+                mConnectedGatt = connectedDevice.connectGatt(getActivity(), false, mGattCallback);
             }
         });
 
@@ -255,7 +266,7 @@ public class StatusActivity extends Activity {
             new BluetoothAdapter.LeScanCallback() {
                 @Override
                 public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-                    runOnUiThread(new Runnable() {
+                    getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             if (device.getName() != null && savedAddress.equals("")) {
@@ -267,7 +278,7 @@ public class StatusActivity extends Activity {
                                     mBluetoothAdapter.stopLeScan(mLeScanCallback);
                                     loading.setVisibility(loading.INVISIBLE);
                                     connectedDevice = device;
-                                    mConnectedGatt = device.connectGatt(StatusActivity.this, false, mGattCallback);
+                                    mConnectedGatt = device.connectGatt(getActivity(), false, mGattCallback);
                                 }
 
                             }
@@ -293,7 +304,7 @@ public class StatusActivity extends Activity {
             Log.i("debug", "Connection Service State : "+ status);
             if (status != 0){
 
-                runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         connectionFail.setText("Connection Failed");
@@ -304,7 +315,7 @@ public class StatusActivity extends Activity {
                 characteristic = gatt.getService(BLE_SERVICE_UUID).getCharacteristic(BLE_CHAR_UUID);
                 gatt.readCharacteristic(characteristic);
                 StatusActivity.this.gatt = gatt;
-                Utils.savePreferences(connectedDevice.getAddress(),connectedDevice.getName(),StatusActivity.this);
+                Utils.savePreferences(connectedDevice.getAddress(),connectedDevice.getName(),getActivity());
                 BLEAScanAlertDialog.dismiss();
             }
         }
@@ -351,7 +362,7 @@ public class StatusActivity extends Activity {
         public LeDeviceListAdapter() {
             super();
             mLeDevices = new ArrayList<BluetoothDevice>();
-            mInflator = StatusActivity.this.getLayoutInflater();
+            mInflator = getActivity().getLayoutInflater();
         }
 
         public void addDevice(BluetoothDevice device) {
