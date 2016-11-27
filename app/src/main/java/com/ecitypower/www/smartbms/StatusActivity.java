@@ -141,16 +141,7 @@ public class StatusActivity extends Activity {
             public void onShow(DialogInterface dialog) {
 
                 scanButton = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-                scanButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        scanButton.setText("Scanning");
-                        scanButton.setEnabled(false);
-                        scanLeDevice();
-//                        d.dismiss();
-                        Log.i("debug","CLicked!!!");
-                    }
-                });
+
             }
         });
         ////////////////////////////////////////////////////////
