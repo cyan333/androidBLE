@@ -17,4 +17,12 @@
         <item>#72d3b4</item>
     </string-array>
 
+    <string-array name="statusDataColors">
+        <item>#5A9AA2</item>
+        <item>#f67a77</item>
+        <item>#fab57b</item>
+        <item>#81ccd5</item>
+        <item>#AA5070</item>
+    </string-array>
+
 </resources>

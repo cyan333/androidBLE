@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -86,6 +87,8 @@ public class StatusActivity extends Fragment {
 
     private SpinKitView loading;
 
+    /* Data */
+    private StatusListAdapter mStatusListAdapter;
 
     public static StatusActivity newInstance() {
 
@@ -110,7 +113,6 @@ public class StatusActivity extends Fragment {
 
         loading = (SpinKitView) statusView.findViewById(R.id.loading);
         loading.setVisibility(loading.INVISIBLE);
-
 
         //Bluetooth permission request.
         if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -181,6 +183,19 @@ public class StatusActivity extends Fragment {
             loading.setVisibility(loading.VISIBLE);
             scanLeDevice();
         }
+
+        mStatusListAdapter = new StatusListAdapter();
+        ListView statusList = (ListView)statusView.findViewById(R.id.statusList);
+        statusList.setAdapter(mStatusListAdapter);
+
+        mStatusListAdapter.addData("VOLTAGE", "Loading");
+        mStatusListAdapter.addData("CELL-1 VOLTAGE", "4.4V");
+        mStatusListAdapter.addData("CELL-2 VOLTAGE", "3.4V");
+        mStatusListAdapter.addData("CELL-3 VOLTAGE", "6.4V");
+        mStatusListAdapter.addData("CELL-4 VOLTAGE", "7.4V");
+        mStatusListAdapter.addData("CELL-5 VOLTAGE", "8.4V");
+        mStatusListAdapter.addData("CELL-6 VOLTAGE", "9.4V");
+
 
         return statusView;
     }
@@ -339,9 +354,17 @@ public class StatusActivity extends Fragment {
 
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-            Log.i("debug","changed");
-            int hi = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0);
-            Log.i("debug", Integer.toString(hi));
+//            Log.i("debug","changed");
+            final int hi = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0);
+//            Log.i("debug", Integer.toString(hi));
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mStatusListAdapter.addData("VOLTAGE", Integer.toString(hi)+"V");
+                    mStatusListAdapter.notifyDataSetChanged();
+                }
+            });
+
         }
 
         @Override
@@ -357,10 +380,10 @@ public class StatusActivity extends Fragment {
 
 
 
-    ////////////////////////////////////////////////////////
-    /////////////////////Custome Adaptor////////////////////
-    ///Adapter for holding devices found through scanning///
-    ////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////
+    //////////////////////List Adaptor - List Device////////////////////
+    //////////Adapter for holding devices found through scanning////////
+    ////////////////////////////////////////////////////////////////////
     private class LeDeviceListAdapter extends BaseAdapter {
         private ArrayList<BluetoothDevice> mLeDevices;
         private LayoutInflater mInflator;
@@ -422,7 +445,137 @@ public class StatusActivity extends Fragment {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////Code Above: Configure BLE///////////////////////////////////////////////
+    /////////////////////////////////////////Code Below: Handle Data////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    ////////////////////////////////////////////////////////////////////
+    ///////////////////////Status List - List Device////////////////////
+    /////////////////////////////List all the data /////////////////////
+    ////////////////////////////////////////////////////////////////////
+    private class StatusListAdapter extends BaseAdapter {
+        private HashMap<String, String> deviceData;
+        private LayoutInflater mInflator;
+
+        public StatusListAdapter() {
+            super();
+            deviceData = new HashMap<>();
+            mInflator = getActivity().getLayoutInflater();
+        }
+
+        public void addData(String key, String value) {
+            deviceData.put(key,value);
+        }
+
+        public String getData(String key) {
+            return deviceData.get(key);
+        }
+
+//        public void clear() {
+//            mLeDevices.clear();
+//        }
+
+        public String position2Key (int position){
+            switch (position){
+                default: return "VOLTAGE";
+                case 1: return "CELL-1 VOLTAGE";
+                case 2: return "CELL-2 VOLTAGE";
+                case 3: return "CELL-3 VOLTAGE";
+                case 4: return "CELL-4 VOLTAGE";
+                case 5: return "CELL-5 VOLTAGE";
+                case 6: return "CELL-6 VOLTAGE";
+                case 7: return "CELL-7 VOLTAGE";
+                case 8: return "TEMPERATURE";
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return deviceData.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return deviceData.get(position2Key(position));
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int position, View view, ViewGroup viewGroup) {
+            switch (position){
+                default:
+                    TextView statusTitle;
+                    TextView statusValue;
+                    ImageView statusImage;
+                    if (view == null){
+                        view = mInflator.inflate(R.layout.listiem_data, viewGroup, false);
+                    }
+
+                    statusTitle = (TextView) view.findViewById(R.id.statusTitle);
+                    statusTitle.setText(position2Key(position));
+
+                    statusValue = (TextView) view.findViewById(R.id.statusValue);
+                    statusValue.setText(deviceData.get(position2Key(position)));
+
+                    statusImage = (ImageView) view.findViewById(R.id.statusImage);
+                    Log.i("debug","position:"+position);
+                    switch (position){
+                        case 0:
+                            statusImage.setImageResource(R.drawable.batterysquare);
+                            break;
+                        case 1:
+                            statusImage.setImageResource(R.drawable.num1);
+                            break;
+                        case 2:
+                            statusImage.setImageResource(R.drawable.num2);
+                            break;
+                        case 3:
+                            statusImage.setImageResource(R.drawable.num3);
+                            break;
+                        case 4:
+                            statusImage.setImageResource(R.drawable.num4);
+                            break;
+                        case 5:
+                            statusImage.setImageResource(R.drawable.num5);
+                            break;
+                        case 6:
+                            statusImage.setImageResource(R.drawable.num6);
+                            break;
+                        case 7:
+                            statusImage.setImageResource(R.drawable.num7);
+                            break;
+                        case 8:
+                            statusImage.setImageResource(R.drawable.temperature);
+                            break;
+                    }
+
+                    return view;
+            }
+
+//            TextView deviceName;
+//            // General ListView optimization code.
+//            if (view == null) {
+//                view = mInflator.inflate(R.layout.listitem_device, viewGroup, false);
+//                deviceName = (TextView) view.findViewById(R.id.device_name);
+//                view.setTag(deviceName);
+//            } else {
+//                deviceName = (TextView) view.getTag();
+//            }
+//
+//            BluetoothDevice device = mLeDevices.get(position);
+//            final String deviceNameStr = device.getName();
+//            if (deviceNameStr != null && deviceNameStr.length() > 0)
+//                deviceName.setText(deviceNameStr);
+//            else
+//                deviceName.setText("Unknown");
+//            return view;
+        }
+    }
 
 
 

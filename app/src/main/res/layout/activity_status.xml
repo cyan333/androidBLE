@@ -10,6 +10,12 @@
         <!--android:layout_height="wrap_content"-->
         <!--android:id="@+id/button" />-->
 
+    <ListView
+        android:id="@+id/statusList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
     <!--Loading Bar-->
     <com.github.ybq.android.spinkit.SpinKitView
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -19,5 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         app:SpinKit_Color="@color/colorLoadingGrey" />
+
+
 
 </FrameLayout>
