@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +27,13 @@ public class TabBarActivity extends FragmentActivity {
         initUI();
     }
 
-    public void test(){
-        FragmentManager fm = getSupportFragmentManager();
-        List<Fragment> fff = fm.getFragments();
-        ((FirstFragment)fff.get(3)).testTV();
-
-
+    public void LEDControl(String ledControl){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+//        List<Fragment> fff = fragmentManager.getFragments();
+//        ((FirstFragment)fff.get(3)).testTV();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        Log.i("debug","LED::" + ledControl);
+        ((StatusActivity) fragments.get(1)).writeData(ledControl);
     }
 
     private ViewPager viewPager;
@@ -39,17 +41,16 @@ public class TabBarActivity extends FragmentActivity {
 
     private void initUI() {
         viewPager = (ViewPager) findViewById(R.id.tabBar);
-        viewPager.setOffscreenPageLimit(5);
+        viewPager.setOffscreenPageLimit(2);
 
         viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
-                    if (position == 0){
-                        return StatusActivity.newInstance();
+                    switch (position){
+                        default: return StatusActivity.newInstance();
+                        case 1: return FirstFragment.newInstance("New instance" + position);
+                        case 2: return SettingActivity.newInstance();
                     }
-
-                    return FirstFragment.newInstance("New instance" + position);
-
 
             }
 
@@ -58,35 +59,6 @@ public class TabBarActivity extends FragmentActivity {
                 return 3;
             }
         });
-//        viewPager.setAdapter(new PagerAdapter() {
-//            @Override
-//            public int getCount() {
-//                return 5;
-//            }
-//
-//            @Override
-//            public boolean isViewFromObject(final View view, final Object object) {
-//                return view.equals(object);
-//            }
-//
-//            @Override
-//            public void destroyItem(final View container, final int position, final Object object) {
-//                ((ViewPager) container).removeView((View) object);
-//            }
-//
-//            @Override
-//            public Object instantiateItem(final ViewGroup container, final int position) {
-//                Log.i("a", "current position " + Integer.toString(position));
-//                final View view = LayoutInflater.from(
-//                        getBaseContext()).inflate(R.layout.item_vp, null, false);
-//
-//                final TextView txtPage = (TextView) view.findViewById(R.id.txt_vp_item_page);
-//                txtPage.setText(String.format("Page #%d", position));
-//
-//                container.addView(view);
-//                return view;
-//            }
-//        });
 
         final String[] colors = getResources().getStringArray(R.array.tabBarColors);
 

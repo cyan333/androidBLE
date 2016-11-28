@@ -65,7 +65,7 @@ public class StatusActivity extends Fragment {
 
     /* Buttons */
     private Button scanButton;
-    private Button LEDButton;
+//    private Button LEDButton;
 
     /* GATT */
     private BluetoothGatt mConnectedGatt;
@@ -85,6 +85,7 @@ public class StatusActivity extends Fragment {
     private String savedAddress;
 
     private SpinKitView loading;
+
 
     public static StatusActivity newInstance() {
 
@@ -108,6 +109,8 @@ public class StatusActivity extends Fragment {
         mLeDeviceListAdapter = new LeDeviceListAdapter();
 
         loading = (SpinKitView) statusView.findViewById(R.id.loading);
+        loading.setVisibility(loading.INVISIBLE);
+
 
         //Bluetooth permission request.
         if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -151,7 +154,17 @@ public class StatusActivity extends Fragment {
             public void onShow(DialogInterface dialog) {
 
                 scanButton = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-
+                scanButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        scanButton.setText("Scanning");
+                        scanButton.setEnabled(false);
+                        scanLeDevice();
+//                        d.dismiss();
+                        savedAddress = "";
+                        Log.i("debug","CLicked!!!");
+                    }
+                });
             }
         });
         ////////////////////////////////////////////////////////
@@ -162,32 +175,25 @@ public class StatusActivity extends Fragment {
         savedAddress = savedAddressName.get(Utils.PREF_BLEADDRESS);
         if (savedAddress.equals("")){
             BLEAScanAlertDialog.show();
+
         }
         else {
             loading.setVisibility(loading.VISIBLE);
             scanLeDevice();
         }
 
-
-        LEDButton = (Button) statusView.findViewById(R.id.button);
-        LEDButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (toggle == 0){
-                    characteristic.setValue("1");
-                    gatt.writeCharacteristic(characteristic);
-                    toggle = 1;
-                }
-                else {
-                    characteristic.setValue("0");
-                    gatt.writeCharacteristic(characteristic);
-                    toggle = 0;
-                }
-            }
-        });
-
         return statusView;
     }
     //Oncreate End
+
+    //////////////////////////////////////////////////
+    ///////////////////Write Data/////////////////////
+    //////////////////////////////////////////////////
+    public void writeData (String input){
+        characteristic.setValue(input);
+        gatt.writeCharacteristic(characteristic);
+    }
+
 
     //////////////////////////////////////////////////
     ///////////Scan BLE Alert Dialog Layout///////////
@@ -395,7 +401,7 @@ public class StatusActivity extends Fragment {
         }
 
         @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
+        public View getView(int position, View view, ViewGroup viewGroup) {
             TextView deviceName;
             // General ListView optimization code.
             if (view == null) {
@@ -406,7 +412,7 @@ public class StatusActivity extends Fragment {
                 deviceName = (TextView) view.getTag();
             }
 
-            BluetoothDevice device = mLeDevices.get(i);
+            BluetoothDevice device = mLeDevices.get(position);
             final String deviceNameStr = device.getName();
             if (deviceNameStr != null && deviceNameStr.length() > 0)
                 deviceName.setText(deviceNameStr);
