@@ -14,6 +14,8 @@ import java.util.List;
 
 import devlight.io.library.ntb.NavigationTabBar;
 
+//https://github.com/DevLight-Mobile-Agency/NavigationTabBar
+
 /**
  * Created by GIGAMOLE on 28.03.2016.
  */
@@ -112,6 +114,7 @@ public class TabBarActivity extends FragmentActivity {
 
         navigationTabBar.setModels(models);
         navigationTabBar.setViewPager(viewPager, 0);
+        navigationTabBar.setIsBadged(false);
         navigationTabBar.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(final int position, final float positionOffset, final int positionOffsetPixels) {

@@ -188,13 +188,15 @@ public class StatusActivity extends Fragment {
         ListView statusList = (ListView)statusView.findViewById(R.id.statusList);
         statusList.setAdapter(mStatusListAdapter);
 
-        mStatusListAdapter.addData("VOLTAGE", "Loading");
-        mStatusListAdapter.addData("CELL-1 VOLTAGE", "4.4V");
-        mStatusListAdapter.addData("CELL-2 VOLTAGE", "3.4V");
-        mStatusListAdapter.addData("CELL-3 VOLTAGE", "6.4V");
-        mStatusListAdapter.addData("CELL-4 VOLTAGE", "7.4V");
-        mStatusListAdapter.addData("CELL-5 VOLTAGE", "8.4V");
-        mStatusListAdapter.addData("CELL-6 VOLTAGE", "9.4V");
+        mStatusListAdapter.addData("Voltage", "Loading");
+        mStatusListAdapter.addData("Cell-1 Voltage", "4.4V");
+        mStatusListAdapter.addData("Cell-2 Voltage", "3.4V");
+        mStatusListAdapter.addData("Cell-3 Voltage", "6.4V");
+        mStatusListAdapter.addData("Cell-4 Voltage", "7.4V");
+        mStatusListAdapter.addData("Cell-5 Voltage", "8.4V");
+        mStatusListAdapter.addData("Cell-6 Voltage", "9.4V");
+        mStatusListAdapter.addData("Cell-7 Voltage", "9.4V");
+        mStatusListAdapter.addData("Temperature", "9.4V");
 
 
         return statusView;
@@ -360,7 +362,7 @@ public class StatusActivity extends Fragment {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mStatusListAdapter.addData("VOLTAGE", Integer.toString(hi)+"V");
+                    mStatusListAdapter.addData("Voltage", Integer.toString(hi)+"V");
                     mStatusListAdapter.notifyDataSetChanged();
                 }
             });
@@ -478,15 +480,15 @@ public class StatusActivity extends Fragment {
 
         public String position2Key (int position){
             switch (position){
-                default: return "VOLTAGE";
-                case 1: return "CELL-1 VOLTAGE";
-                case 2: return "CELL-2 VOLTAGE";
-                case 3: return "CELL-3 VOLTAGE";
-                case 4: return "CELL-4 VOLTAGE";
-                case 5: return "CELL-5 VOLTAGE";
-                case 6: return "CELL-6 VOLTAGE";
-                case 7: return "CELL-7 VOLTAGE";
-                case 8: return "TEMPERATURE";
+                default: return "Voltage";
+                case 1: return "Cell-1 Voltage";
+                case 2: return "Cell-2 Voltage";
+                case 3: return "Cell-3 Voltage";
+                case 4: return "Cell-4 Voltage";
+                case 5: return "Cell-5 Voltage";
+                case 6: return "Cell-6 Voltage";
+                case 7: return "Cell-7 Voltage";
+                case 8: return "Temperature";
             }
         }
 
@@ -508,6 +510,25 @@ public class StatusActivity extends Fragment {
         @Override
         public View getView(int position, View view, ViewGroup viewGroup) {
             switch (position){
+                case 0:
+                    TextView statusTitle1;
+                    TextView statusValue1;
+                    ImageView statusImage1;
+//                    if (view == null){
+                        view = mInflator.inflate(R.layout.listiem_data, viewGroup, false);
+//                    }
+
+                    statusTitle1 = (TextView) view.findViewById(R.id.statusTitle);
+                    statusTitle1.setText(position2Key(position));
+
+                    statusValue1 = (TextView) view.findViewById(R.id.statusValue);
+                    statusValue1.setText(deviceData.get(position2Key(position)));
+
+                    statusImage1 = (ImageView) view.findViewById(R.id.statusImage);
+                    statusImage1.setImageResource(R.drawable.charged_battery    );
+
+                    return view;
+
                 default:
                     TextView statusTitle;
                     TextView statusValue;
@@ -523,37 +544,46 @@ public class StatusActivity extends Fragment {
                     statusValue.setText(deviceData.get(position2Key(position)));
 
                     statusImage = (ImageView) view.findViewById(R.id.statusImage);
-                    Log.i("debug","position:"+position);
-                    switch (position){
-                        case 0:
-                            statusImage.setImageResource(R.drawable.batterysquare);
-                            break;
-                        case 1:
-                            statusImage.setImageResource(R.drawable.num1);
-                            break;
-                        case 2:
-                            statusImage.setImageResource(R.drawable.num2);
-                            break;
-                        case 3:
-                            statusImage.setImageResource(R.drawable.num3);
-                            break;
-                        case 4:
-                            statusImage.setImageResource(R.drawable.num4);
-                            break;
-                        case 5:
-                            statusImage.setImageResource(R.drawable.num5);
-                            break;
-                        case 6:
-                            statusImage.setImageResource(R.drawable.num6);
-                            break;
-                        case 7:
-                            statusImage.setImageResource(R.drawable.num7);
-                            break;
-                        case 8:
-                            statusImage.setImageResource(R.drawable.temperature);
-                            break;
-                    }
 
+//                    final String[] colors = getResources().getStringArray(R.array.statusDataColors);
+//                    view.setBackgroundColor(Color.parseColor(colors[ position % 2 ]));
+//                    switch (position){
+//                        case 1:
+//                            statusImage.setImageResource(R.drawable.num1);
+//
+//                            break;
+//                        case 2:
+//                            statusImage.setImageResource(R.drawable.num2);
+//                            break;
+//                        case 3:
+//                            statusImage.setImageResource(R.drawable.num3);
+//                            break;
+//                        case 4:
+//                            statusImage.setImageResource(R.drawable.num4);
+//                            break;
+//                        case 5:
+//                            statusImage.setImageResource(R.drawable.num5);
+//                            break;
+//                        case 6:
+//                            statusImage.setImageResource(R.drawable.num6);
+//                            break;
+//                        case 7:
+//                            statusImage.setImageResource(R.drawable.num7);
+//                            break;
+//                        case 8:
+//                            statusImage.setImageResource(R.drawable.temperature);
+//                            break;
+//                    }
+                    int[] statusIcon = {
+                            R.drawable.num1,
+                            R.drawable.num2,
+                            R.drawable.num3,
+                            R.drawable.num4,
+                            R.drawable.num5,
+                            R.drawable.num6,
+                            R.drawable.num7,
+                            R.drawable.temperature};
+                    statusImage.setImageResource(statusIcon[position-1]);
                     return view;
             }
 

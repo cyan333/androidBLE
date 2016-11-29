@@ -8,6 +8,13 @@
     <color name="colorLoadingGrey">#bcc2c6</color>
     <color name="colorNavBar">#000000</color>
     <color name="colorPrimaryBg">#ffffff</color>
+    <!--<color name="colorStatusText">#ffffff</color>-->
+    <!--<color name="colorDataColor">#506970</color>-->
+    <!--<color name="colorListDivider">#ffffff</color>-->
+    <color name="colorDataColor">#000000</color>
+    <color name="colorStatusText">#000000</color>
+    <color name="colorListDivider">#000000</color>
+
 
     <string-array name="tabBarColors">
         <item>#df5a55</item>
@@ -18,11 +25,14 @@
     </string-array>
 
     <string-array name="statusDataColors">
-        <item>#5A9AA2</item>
-        <item>#f67a77</item>
-        <item>#fab57b</item>
-        <item>#81ccd5</item>
-        <item>#AA5070</item>
+        <!--<item>#769db0</item>-->
+        <!--<item>#f67a77</item>-->
+        <!--<item>#dba394</item>-->
+        <!--<item>#5ba9c0</item>-->
+        <!--<item>#c39c9c</item>-->
+        <!--<item>#aba9a4</item>-->
+        <item>#cbcbce</item>
+        <item>#abd0d5</item>
     </string-array>
 
 </resources>
