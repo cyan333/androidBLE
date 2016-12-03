@@ -29,6 +29,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.github.ybq.android.spinkit.SpinKitView;
 
 import java.util.ArrayList;
@@ -86,6 +87,13 @@ public class StatusActivity extends Fragment {
     private String savedAddress;
 
     private SpinKitView loading;
+
+    private RoundCornerProgressBar voltageProgressBar;
+
+    private float maxVoltage;
+    private float minVoltage;
+
+    private TextView voltagePercentage;
 
     /* Data */
     private StatusListAdapter mStatusListAdapter;
@@ -198,6 +206,12 @@ public class StatusActivity extends Fragment {
         mStatusListAdapter.addData("Cell-7 Voltage", "9.4V");
         mStatusListAdapter.addData("Temperature", "9.4V");
 
+        voltageProgressBar = (RoundCornerProgressBar) statusView.findViewById(R.id.voltageProgressBar);
+        voltageProgressBar.setProgress(25);
+
+
+        voltagePercentage = (TextView) statusView.findViewById((R.id.voltagePercentage));
+
 
         return statusView;
     }
@@ -273,8 +287,6 @@ public class StatusActivity extends Fragment {
                     BLEAScanAlertDialog.show();
                     connectionFail.setText("Cannot find previous device.");
                 }
-
-
 
             }
         }, SCAN_PERIOD);
@@ -363,6 +375,7 @@ public class StatusActivity extends Fragment {
                 @Override
                 public void run() {
                     mStatusListAdapter.addData("Voltage", Integer.toString(hi)+"V");
+                    voltageProgressBar.setProgress(voltageProgressBar.getProgress() + 10);
                     mStatusListAdapter.notifyDataSetChanged();
                 }
             });

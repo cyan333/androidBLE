@@ -1,10 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#ffffff">
     <!--android:background="@drawable/bg_image">-->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp">
+
+        <TextView
+            android:id="@+id/voltagePercentage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="75sp"
+            android:textColor="@color/colorStatusText"
+            android:text="80"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="sans-serif-light"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="25dp"
+            android:layout_marginTop="50dp"
+            android:text="  %"
+            android:textColor="@color/colorStatusText"
+            android:layout_toEndOf="@+id/voltagePercentage"/>
+
+    </RelativeLayout>
+
+
+    <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+        android:id="@+id/voltageProgressBar"
+        android:layout_height="8dp"
+        android:layout_width="260dp"
+        app:rcBackgroundPadding="1dp"
+        android:layout_marginTop="120dp"
+        android:layout_gravity="center_horizontal"
+        app:rcBackgroundColor="@color/color_progress_background"
+        app:rcProgressColor="@color/color_progressBar"
+        app:rcMax="150"
+        app:rcRadius="5dp"/>
+
+    <!--<com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar-->
+        <!--android:id="@+id/voltageProgressBar"-->
+        <!--android:layout_width="260dp"-->
+        <!--android:layout_height="30dp"-->
+        <!--android:paddingTop="100dp"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--app:rcBackgroundColor="@color/color_progress_background"-->
+        <!--app:rcBackgroundPadding="4dp"-->
+        <!--app:rcMax="150"-->
+        <!--app:rcProgressColor="@color/color_progress_blue_progress" />-->
+
+    <TextView
+        android:id="@+id/voltagePercentageTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:textColor="@color/colorStatusText"
+        android:paddingTop="140dp"
+        android:text="Voltage"
+        android:layout_gravity="center_horizontal"
+        android:fontFamily="sans-serif-light"/>
 
     <ListView
         android:id="@+id/statusList"
@@ -16,6 +79,13 @@
         android:divider="@color/colorListDivider"
         android:dividerHeight="0.5dp"/>
 
+    <!--<View-->
+        <!--android:id="@+id/loadingBg"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:background="#d9ffffff">-->
+    <!--</View>-->
 
     <!--Loading Bar-->
     <com.github.ybq.android.spinkit.SpinKitView
@@ -26,7 +96,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         app:SpinKit_Color="@color/colorLoadingGrey" />
-
-
 
 </FrameLayout>

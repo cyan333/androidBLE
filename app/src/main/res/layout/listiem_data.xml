@@ -20,7 +20,8 @@
         android:textColor="@color/colorStatusText"
         android:layout_centerVertical="true"
         android:letterSpacing="0.05"
-        android:layout_toEndOf="@id/statusImage"/>
+        android:layout_toEndOf="@id/statusImage"
+        android:fontFamily="sans-serif-light"/>
 
 
     <TextView

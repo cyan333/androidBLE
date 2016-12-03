@@ -6,7 +6,7 @@
     <color name="colorPrimaryBlue">#348cb5</color>
     <color name="colorWarningRed">#d3081c</color>
     <color name="colorLoadingGrey">#bcc2c6</color>
-    <color name="colorNavBar">#000000</color>
+    <color name="colorNavBar">#EDEDED</color>
     <color name="colorPrimaryBg">#ffffff</color>
     <!--<color name="colorStatusText">#ffffff</color>-->
     <!--<color name="colorDataColor">#506970</color>-->
@@ -14,6 +14,10 @@
     <color name="colorDataColor">#000000</color>
     <color name="colorStatusText">#000000</color>
     <color name="colorListDivider">#000000</color>
+
+    <color name="color_progress_blue_header">#ff33b5e5</color>
+    <color name="color_progressBar">#000000</color>
+    <color name="color_progress_background">#E9EAEC</color>
 
 
     <string-array name="tabBarColors">
