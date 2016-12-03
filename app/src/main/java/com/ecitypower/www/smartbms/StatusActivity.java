@@ -29,7 +29,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
+import com.github.lzyzsd.circleprogress.ArcProgress;
 import com.github.ybq.android.spinkit.SpinKitView;
 
 import java.util.ArrayList;
@@ -38,6 +38,8 @@ import java.util.UUID;
 
 import static android.content.ContentValues.TAG;
 import static android.content.Context.BLUETOOTH_SERVICE;
+
+//import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 
 /**
  * Created by Fangming on 11/20/16.
@@ -87,8 +89,10 @@ public class StatusActivity extends Fragment {
     private String savedAddress;
 
     private SpinKitView loading;
+    private View loadingBg;
 
-    private RoundCornerProgressBar voltageProgressBar;
+//    private RoundCornerProgressBar voltageProgressBar;
+    private ArcProgress voltageProgressBar;
 
     private float maxVoltage;
     private float minVoltage;
@@ -120,7 +124,16 @@ public class StatusActivity extends Fragment {
         mLeDeviceListAdapter = new LeDeviceListAdapter();
 
         loading = (SpinKitView) statusView.findViewById(R.id.loading);
-        loading.setVisibility(loading.INVISIBLE);
+        loading.setVisibility(View.INVISIBLE);
+
+        loadingBg = (View) statusView.findViewById(R.id.loadingBg);
+        loadingBg.setVisibility(View.INVISIBLE);
+        loadingBg.setOnClickListener(new View.OnClickListener() {
+                                         @Override
+                                         public void onClick(View v) {
+                                         }
+                                     }
+        );
 
         //Bluetooth permission request.
         if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -188,7 +201,8 @@ public class StatusActivity extends Fragment {
 
         }
         else {
-            loading.setVisibility(loading.VISIBLE);
+            loading.setVisibility(View.VISIBLE);
+            loadingBg.setVisibility(View.VISIBLE);
             scanLeDevice();
         }
 
@@ -206,12 +220,13 @@ public class StatusActivity extends Fragment {
         mStatusListAdapter.addData("Cell-7 Voltage", "9.4V");
         mStatusListAdapter.addData("Temperature", "9.4V");
 
-        voltageProgressBar = (RoundCornerProgressBar) statusView.findViewById(R.id.voltageProgressBar);
+//        voltageProgressBar = (RoundCornerProgressBar) statusView.findViewById(voltageProgressBar);
+//        voltageProgressBar.setProgress(25);
+
+        voltageProgressBar = (ArcProgress) statusView.findViewById(R.id.voltageProgressBar);
         voltageProgressBar.setProgress(25);
 
-
-        voltagePercentage = (TextView) statusView.findViewById((R.id.voltagePercentage));
-
+//        voltagePercentage = (TextView) statusView.findViewById((R.id.voltagePercentage));
 
         return statusView;
     }
@@ -283,9 +298,11 @@ public class StatusActivity extends Fragment {
                     scanButton.setEnabled(true);
                 }
                 else if (connectedDevice == null) {
-                    loading.setVisibility(loading.INVISIBLE);
+                    loading.setVisibility(View.INVISIBLE);
+                    loadingBg.setVisibility(View.INVISIBLE);
                     BLEAScanAlertDialog.show();
                     connectionFail.setText("Cannot find previous device.");
+                    voltageProgressBar.setProgress(100);
                 }
 
             }
@@ -311,7 +328,8 @@ public class StatusActivity extends Fragment {
                             else if (device.getName() != null){
                                 if (savedAddress.equals(device.getAddress())){
                                     mBluetoothAdapter.stopLeScan(mLeScanCallback);
-                                    loading.setVisibility(loading.INVISIBLE);
+                                    loading.setVisibility(View.INVISIBLE);
+                                    loadingBg.setVisibility(View.INVISIBLE);
                                     connectedDevice = device;
                                     mConnectedGatt = device.connectGatt(getActivity(), false, mGattCallback);
                                 }
@@ -375,7 +393,7 @@ public class StatusActivity extends Fragment {
                 @Override
                 public void run() {
                     mStatusListAdapter.addData("Voltage", Integer.toString(hi)+"V");
-                    voltageProgressBar.setProgress(voltageProgressBar.getProgress() + 10);
+//                    voltageProgressBar.setProgress(voltageProgressBar.getProgress() + 10);
                     mStatusListAdapter.notifyDataSetChanged();
                 }
             });

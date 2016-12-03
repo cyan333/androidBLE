@@ -31,6 +31,7 @@
         app:ntb_title_mode="all"
         app:ntb_titled="true"
         app:ntb_swiped="true"
+        app:ntb_inactive_color="#000000"
         app:ntb_bg_color="@color/colorNavBar"/>
 
 </LinearLayout>
