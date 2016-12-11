@@ -7,18 +7,20 @@
     <color name="colorWarningRed">#d3081c</color>
     <color name="colorLoadingGrey">#bcc2c6</color>
     <color name="colorNavBar">#EDEDED</color>
-    <color name="colorPrimaryBg">#ffffff</color>
+    <color name="colorPrimaryBg">#F7F7F7</color>
     <!--<color name="colorStatusText">#ffffff</color>-->
     <!--<color name="colorDataColor">#506970</color>-->
     <!--<color name="colorListDivider">#ffffff</color>-->
     <color name="colorDataColor">#000000</color>
     <color name="colorStatusText">#000000</color>
-    <color name="colorListDivider">#000000</color>
+    <color name="colorListDivider">#F1F1F1</color>
 
     <color name="color_progress_blue_header">#ff33b5e5</color>
     <color name="color_progressBar">#000000</color>
     <color name="color_progress_background">#E9EAEC</color>
 
+    <color name="color_section">#F1F1F1</color>
+    <color name="color_listTitle">#000000</color>
 
     <string-array name="tabBarColors">
         <item>#df5a55</item>
