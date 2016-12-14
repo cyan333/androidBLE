@@ -1,5 +1,6 @@
 package com.ecitypower.www.smartbms;
 
+import android.bluetooth.BluetoothDevice;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,6 +22,8 @@ import devlight.io.library.ntb.NavigationTabBar;
  */
 public class TabBarActivity extends FragmentActivity {
 
+    private BluetoothDevice connectedDevice;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,11 +34,18 @@ public class TabBarActivity extends FragmentActivity {
 
     public void LEDControl(String ledControl){
         FragmentManager fragmentManager = getSupportFragmentManager();
-//        List<Fragment> fff = fragmentManager.getFragments();
-//        ((FirstFragment)fff.get(3)).testTV();
+
         List<Fragment> fragments = fragmentManager.getFragments();
         Log.i("debug","LED::" + ledControl);
+        //status Activity Tab bar index 1
         ((StatusActivity) fragments.get(1)).writeData(ledControl);
+    }
+
+    public void saveBLENameAddress (String connectedDeviceName, String connectedDeviceAddress){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        List<Fragment> fragments = fragmentManager.getFragments();
+        ((SettingActivity) fragments.get(0)).saveDeviceAddressandName(connectedDeviceName,connectedDeviceAddress);
     }
 
     private ViewPager viewPager;

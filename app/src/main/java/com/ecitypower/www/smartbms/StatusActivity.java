@@ -61,6 +61,9 @@ public class StatusActivity extends Fragment {
     private static final UUID BLE_DESCRIPTOR_1_UUID = UUID.fromString("00002901-0000-1000-8000-00805f9b34fb");
     private static final UUID BLE_DESCRIPTOR_2_UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
 
+    /* Fully Charged Voltage */
+    private static final int FULLY_CHARGED_VOLTAGE = 1;
+
     private BluetoothGattCharacteristic characteristic;
 
     private BluetoothAdapter mBluetoothAdapter;
@@ -194,7 +197,7 @@ public class StatusActivity extends Fragment {
         ///////////Save and Load Saved Device Address///////////
         ////////////////////////////////////////////////////////
 
-        HashMap<String, String> savedAddressName = Utils.loadPreferences(getActivity());
+        HashMap<String, String> savedAddressName = Utils.loadConnectedDevice(getActivity());
         savedAddress = savedAddressName.get(Utils.PREF_BLEADDRESS);
         if (savedAddress.equals("")){
             BLEAScanAlertDialog.show();
@@ -356,7 +359,6 @@ public class StatusActivity extends Fragment {
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             Log.i("debug", "Connection Service State : "+ status);
             if (status != 0){
-
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -368,8 +370,9 @@ public class StatusActivity extends Fragment {
                 characteristic = gatt.getService(BLE_SERVICE_UUID).getCharacteristic(BLE_CHAR_UUID);
                 gatt.readCharacteristic(characteristic);
                 StatusActivity.this.gatt = gatt;
-                Utils.savePreferences(connectedDevice.getAddress(),connectedDevice.getName(),getActivity());
+                Utils.saveConnectedDevice(connectedDevice.getAddress(),connectedDevice.getName(),getActivity());
                 BLEAScanAlertDialog.dismiss();
+                ((TabBarActivity)getActivity()).saveBLENameAddress(connectedDevice.getName(),connectedDevice.getAddress());
             }
         }
 
@@ -387,17 +390,20 @@ public class StatusActivity extends Fragment {
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
 //            Log.i("debug","changed");
-            final int hi = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0);
+            final int voltage = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0);
 //            Log.i("debug", Integer.toString(hi));
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mStatusListAdapter.addData("Voltage", Integer.toString(hi)+"V");
+                    mStatusListAdapter.addData("Voltage", Integer.toString(voltage)+"V");
 //                    voltageProgressBar.setProgress(voltageProgressBar.getProgress() + 10);
                     mStatusListAdapter.notifyDataSetChanged();
+                    Log.i("debug", "Voltage" + voltage);
+                    if (voltage == FULLY_CHARGED_VOLTAGE && Utils.loadNotificationStatus(getActivity())){
+                        Utils.sendNotification(getActivity(), "Battery Fully Charged", "Your battery is fully charged", R.drawable.full_battery);
+                    }
                 }
             });
-
         }
 
         @Override
@@ -637,6 +643,7 @@ public class StatusActivity extends Fragment {
 //            return view;
         }
     }
+
 
 
 

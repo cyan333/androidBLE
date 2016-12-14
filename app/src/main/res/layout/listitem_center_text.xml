@@ -10,17 +10,7 @@
         android:layout_height="wrap_content"
         android:textSize="18dp"
         android:layout_centerVertical="true"
-        android:paddingStart="@dimen/settingList_marginStart"
+        android:layout_centerHorizontal="true"
         android:textColor="@color/color_listTitle"/>
-
-    <TextView
-        android:id="@+id/settingData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16dp"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:paddingEnd="@dimen/settingList_marginEnd"/>
-
 
 </RelativeLayout>
