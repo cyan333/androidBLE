@@ -81,7 +81,7 @@ public class TabBarActivity extends FragmentActivity {
                         getResources().getDrawable(R.drawable.battery),
                         Color.parseColor(colors[0]))
                         .selectedIcon(getResources().getDrawable(R.drawable.battery_click))
-                        .title("Data")
+                        .title(getResources().getString(R.string.Tab_Data))
                         .badgeTitle("NTB")
                         .build()
         );
@@ -90,7 +90,7 @@ public class TabBarActivity extends FragmentActivity {
                         getResources().getDrawable(R.drawable.chart),
                         Color.parseColor(colors[1]))
                         .selectedIcon(getResources().getDrawable(R.drawable.chart_click))
-                        .title("Chart")
+                        .title(getResources().getString(R.string.Tab_Chart))
                         .badgeTitle("with")
                         .build()
         );
@@ -99,7 +99,7 @@ public class TabBarActivity extends FragmentActivity {
                         getResources().getDrawable(R.drawable.setting),
                         Color.parseColor(colors[2]))
                         .selectedIcon(getResources().getDrawable(R.drawable.setting_click))
-                        .title("Setting")
+                        .title(getResources().getString(R.string.Tab_Setting))
                         .badgeTitle("state")
                         .build()
         );

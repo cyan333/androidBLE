@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">SmartBMS</string>
+
+    <string name="BLE_not_supported">不支持蓝牙</string>
+    <!--Scan BLE alert dialog-->
+    <string name="Select_Bluetooth_Device">请选择蓝牙设备</string>
+    <string name="Scan">扫描</string>
+    <string name="Cancel">取消</string>
+    <string name="Scanning">搜索中</string>
+
+    <string name="Cannot_find_previous_device">找不到蓝牙设备</string>
+    <string name="Connection_Failed">连接失败</string>
+
+    <string name="Battery_Fully_Charged">电池电量已满</string>
+    <string name="Battery_Fully_Charged_Content">您的电池已充满</string>
+
+    <string name="Unknown">未知设备</string>
+
+    <string name="Tab_Data">参数</string>
+    <string name="Tab_Chart">图表</string>
+    <string name="Tab_Setting">设置</string>
+
+    <string name="Loading">加载中</string>
+
+    <string name="email">xxx@qq.com</string>
+    <string name="email_subject">[Smart BMS 反馈]</string>
+    <string name="Send_email_using">选择一个应用发送邮件</string>
+    <string name="No_email_clients_installed">没找到邮件应用</string>
+
+    <string name="ecitypower_URL">www.electrony.cn</string>
+
+    <string name="disconnect_title">你确定要继续吗？</string>
+    <string name="disconnect_content">没连接蓝牙设备将无法用这款应用</string>
+    <string name="Yes">是</string>
+
+    <string name="Device_Name">设备名字</string>
+    <string name="Device_Address">设备地址</string>
+    <string name="Notification">开启通知</string>
+    <string name="Like_us_on_facebook">在Facebook上关注我们</string>
+    <string name="Help_and_Feedback">建议反馈</string>
+    <string name="About_us">About us</string>
+    <string name="Disconnect_Bluetooth_Device">断开设备连接</string>
+    <string name="LED_On_Off">LED On/Off</string>
+    <string name="Test_Notification">Test Notification</string>
+
+</resources>

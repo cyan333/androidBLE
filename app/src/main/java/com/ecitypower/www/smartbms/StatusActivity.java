@@ -147,7 +147,7 @@ public class StatusActivity extends Fragment {
         // Use this check to determine whether BLE is supported on the device.  Then you can
         // selectively disable BLE-related features.
         if (!getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            Toast.makeText(getActivity(), "BLE not supported.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.BLE_not_supported, Toast.LENGTH_SHORT).show();
             getActivity().finish();
         }
         final BluetoothManager bluetoothManager =
@@ -156,7 +156,7 @@ public class StatusActivity extends Fragment {
 
         // Checks if Bluetooth is supported on the device.
         if (mBluetoothAdapter == null) {
-            Toast.makeText(getActivity(), "Bluetooth not supported", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.BLE_not_supported, Toast.LENGTH_SHORT).show();
             getActivity().finish();
 //            return;
         }
@@ -168,9 +168,9 @@ public class StatusActivity extends Fragment {
 
         BLEAScanAlertDialog = BLEAScanAlertDialogBuilder
                 .setView(makeAlertDialog())
-                .setTitle("Select Bluetooth Device")
-                .setPositiveButton("Scan", null) //Set to null. We override the onclick
-                .setNegativeButton("Cancel", null)
+                .setTitle(R.string.Select_Bluetooth_Device)
+                .setPositiveButton(R.string.Scan, null) //Set to null. We override the onclick
+                .setNegativeButton(R.string.Cancel, null)
                 .setCancelable(false)
                 .create();
 
@@ -183,12 +183,14 @@ public class StatusActivity extends Fragment {
                 scanButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        scanButton.setText("Scanning");
+                        scanButton.setText(R.string.Scanning);
                         scanButton.setEnabled(false);
                         scanLeDevice();
 //                        d.dismiss();
                         savedAddress = "";
+
                         Log.i("debug","CLicked!!!");
+
                     }
                 });
             }
@@ -213,7 +215,7 @@ public class StatusActivity extends Fragment {
         ListView statusList = (ListView)statusView.findViewById(R.id.statusList);
         statusList.setAdapter(mStatusListAdapter);
 
-        mStatusListAdapter.addData("Voltage", "Loading");
+        mStatusListAdapter.addData("Voltage ", "Loading");
         mStatusListAdapter.addData("Cell-1 Voltage", "4.4V");
         mStatusListAdapter.addData("Cell-2 Voltage", "3.4V");
         mStatusListAdapter.addData("Cell-3 Voltage", "6.4V");
@@ -233,15 +235,8 @@ public class StatusActivity extends Fragment {
 
         return statusView;
     }
-    //Oncreate End
 
-    //////////////////////////////////////////////////
-    ///////////////////Write Data/////////////////////
-    //////////////////////////////////////////////////
-    public void writeData (String input){
-        characteristic.setValue(input);
-        gatt.writeCharacteristic(characteristic);
-    }
+    /////////Oncreate End////////////
 
 
     //////////////////////////////////////////////////
@@ -270,7 +265,7 @@ public class StatusActivity extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 mBluetoothAdapter.stopLeScan(mLeScanCallback);
-                scanButton.setText("Scan");
+                scanButton.setText(R.string.Scan);
                 scanButton.setEnabled(true);
                 connectedDevice = mLeDeviceListAdapter.getDevice(position);
                 mConnectedGatt = connectedDevice.connectGatt(getActivity(), false, mGattCallback);
@@ -297,20 +292,22 @@ public class StatusActivity extends Fragment {
             public void run() {
                 mBluetoothAdapter.stopLeScan(mLeScanCallback);
                 if (savedAddress.equals("")){
-                    scanButton.setText("Scan");
+                    scanButton.setText(R.string.Scan);
                     scanButton.setEnabled(true);
                 }
                 else if (connectedDevice == null) {
                     loading.setVisibility(View.INVISIBLE);
                     loadingBg.setVisibility(View.INVISIBLE);
                     BLEAScanAlertDialog.show();
-                    connectionFail.setText("Cannot find previous device.");
+                    connectionFail.setText(R.string.Cannot_find_previous_device);
                     voltageProgressBar.setProgress(100);
                 }
 
             }
         }, SCAN_PERIOD);
+
         Log.i("debug","SSSSSSStart scanning");
+
         mBluetoothAdapter.startLeScan(mLeScanCallback);
     }
 
@@ -351,18 +348,22 @@ public class StatusActivity extends Fragment {
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 gatt.discoverServices();
+
                 Log.i("debug", "Did connect device");
+
             }
         }
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+
             Log.i("debug", "Connection Service State : "+ status);
+
             if (status != 0){
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        connectionFail.setText("Connection Failed");
+                        connectionFail.setText(R.string.Connection_Failed);
                     }
                 });
             }
@@ -370,6 +371,7 @@ public class StatusActivity extends Fragment {
                 characteristic = gatt.getService(BLE_SERVICE_UUID).getCharacteristic(BLE_CHAR_UUID);
                 gatt.readCharacteristic(characteristic);
                 StatusActivity.this.gatt = gatt;
+                //save connected device for user
                 Utils.saveConnectedDevice(connectedDevice.getAddress(),connectedDevice.getName(),getActivity());
                 BLEAScanAlertDialog.dismiss();
                 ((TabBarActivity)getActivity()).saveBLENameAddress(connectedDevice.getName(),connectedDevice.getAddress());
@@ -400,7 +402,11 @@ public class StatusActivity extends Fragment {
                     mStatusListAdapter.notifyDataSetChanged();
                     Log.i("debug", "Voltage" + voltage);
                     if (voltage == FULLY_CHARGED_VOLTAGE && Utils.loadNotificationStatus(getActivity())){
-                        Utils.sendNotification(getActivity(), "Battery Fully Charged", "Your battery is fully charged", R.drawable.full_battery);
+                        Utils.sendNotification(
+                                getActivity(),
+                                getResources().getString(R.string.Battery_Fully_Charged),
+                                getResources().getString(R.string.Battery_Fully_Charged_Content),
+                                R.drawable.full_battery);
                     }
                 }
             });
@@ -417,7 +423,13 @@ public class StatusActivity extends Fragment {
         };
     };
 
-
+    //////////////////////////////////////////////////
+    ///////////////////Write Data/////////////////////
+    //////////////////////////////////////////////////
+    public void writeData (String input){
+        characteristic.setValue(input);
+        gatt.writeCharacteristic(characteristic);
+    }
 
     ////////////////////////////////////////////////////////////////////
     //////////////////////List Adaptor - List Device////////////////////
@@ -479,7 +491,7 @@ public class StatusActivity extends Fragment {
             if (deviceNameStr != null && deviceNameStr.length() > 0)
                 deviceName.setText(deviceNameStr);
             else
-                deviceName.setText("Unknown");
+                deviceName.setText(R.string.Unknown);
             return view;
         }
     }
@@ -582,35 +594,6 @@ public class StatusActivity extends Fragment {
 
                     statusImage = (ImageView) view.findViewById(R.id.statusImage);
 
-//                    final String[] colors = getResources().getStringArray(R.array.statusDataColors);
-//                    view.setBackgroundColor(Color.parseColor(colors[ position % 2 ]));
-//                    switch (position){
-//                        case 1:
-//                            statusImage.setImageResource(R.drawable.num1);
-//
-//                            break;
-//                        case 2:
-//                            statusImage.setImageResource(R.drawable.num2);
-//                            break;
-//                        case 3:
-//                            statusImage.setImageResource(R.drawable.num3);
-//                            break;
-//                        case 4:
-//                            statusImage.setImageResource(R.drawable.num4);
-//                            break;
-//                        case 5:
-//                            statusImage.setImageResource(R.drawable.num5);
-//                            break;
-//                        case 6:
-//                            statusImage.setImageResource(R.drawable.num6);
-//                            break;
-//                        case 7:
-//                            statusImage.setImageResource(R.drawable.num7);
-//                            break;
-//                        case 8:
-//                            statusImage.setImageResource(R.drawable.temperature);
-//                            break;
-//                    }
                     int[] statusIcon = {
                             R.drawable.num1,
                             R.drawable.num2,

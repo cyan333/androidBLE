@@ -49,8 +49,9 @@ public class SettingActivity extends Fragment {
 
         Log.i("debug","tab: Setting");
 
-        deviceName = "Loading";
-        deviceAddress = "Loading";
+        deviceName = getResources().getString(R.string.Loading);
+        deviceAddress = getResources().getString(R.string.Loading);
+
 //        Utils.loadPreferences(this);
 
 //        Button ledButton = (Button) statusView.findViewById(R.id.button);
@@ -75,6 +76,7 @@ public class SettingActivity extends Fragment {
         settingList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
+
                 Log.i("debug", "position:" + position);
 
 //                if (position == 12){
@@ -103,7 +105,7 @@ public class SettingActivity extends Fragment {
 //                    mNotificationManager.notify(0, mBuilder.build());
 //                }
                 if (position == 5){
-                    String url = "http://www.ecitypower.com";
+                    String url = getResources().getString(R.string.ecitypower_URL);
                     Intent i = new Intent(Intent.ACTION_VIEW);
                     i.setData(Uri.parse(url));
                     startActivity(i);
@@ -112,22 +114,22 @@ public class SettingActivity extends Fragment {
                 else if (position == 6) {
                     final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
                     emailIntent.setType("text/plain");
-                    emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[] { "sxie@wpi.edu" });
-                    emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "[Smart BMS Feedback]");
+                    emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[] { getResources().getString(R.string.email) });
+                    emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.email_subject));
 
                     emailIntent.setType("message/rfc822");
 
                     try {
                         startActivity(Intent.createChooser(emailIntent,
-                                "Send email using..."));
+                                getResources().getString(R.string.Send_email_using)));
                     } catch (android.content.ActivityNotFoundException ex) {
                         Toast.makeText(getActivity(),
-                                "No email clients installed.",
+                                getResources().getString(R.string.No_email_clients_installed),
                                 Toast.LENGTH_SHORT).show();
                     }
                 }
                 else if (position == 7){
-                    String url = "http://www.ecitypower.com";
+                    String url = getResources().getString(R.string.ecitypower_URL);
                     Intent i = new Intent(Intent.ACTION_VIEW);
                     i.setData(Uri.parse(url));
                     startActivity(i);
@@ -137,15 +139,16 @@ public class SettingActivity extends Fragment {
                     AlertDialog.Builder disconnectAlertDialogBuilder = new AlertDialog.Builder(getActivity());
 
                     disconnectAlertDialog = disconnectAlertDialogBuilder
-                            .setMessage("Do you want to disconnect the current bluetooth device? To use this app, you need to have a BMS bluetooth device connected. ")
-                            .setPositiveButton("Yes",
+                            .setTitle(R.string.disconnect_title)
+                            .setMessage(R.string.disconnect_content)
+                            .setPositiveButton(R.string.Yes,
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
                                             Utils.saveConnectedDevice("" , "" , getActivity());
                                             dialog.dismiss();
                                         }
                                     }) //Set to null. We override the onclick
-                            .setNegativeButton("No", null)
+                            .setNegativeButton(R.string.Cancel, null)
                             .setCancelable(false)
                             .create();
 
@@ -202,7 +205,7 @@ public class SettingActivity extends Fragment {
                         view = mInflator.inflate(R.layout.listitem_text_text, viewGroup, false);
                     }
                     settingTitle_DeviceName = (TextView) view.findViewById(R.id.settingTitle);
-                    settingTitle_DeviceName.setText("Device Name");
+                    settingTitle_DeviceName.setText(R.string.Device_Name);
 
                     settingData_DeviceName = (TextView) view.findViewById(R.id.settingData);
                     settingData_DeviceName.setText(deviceName);
@@ -215,7 +218,7 @@ public class SettingActivity extends Fragment {
                         view = mInflator.inflate(R.layout.listitem_text_text, viewGroup, false);
                     }
                     settingTitle_DeviceAddress = (TextView) view.findViewById(R.id.settingTitle);
-                    settingTitle_DeviceAddress.setText("Device Address");
+                    settingTitle_DeviceAddress.setText(R.string.Device_Address);
 
                     settingData_DeviceAddress = (TextView) view.findViewById(R.id.settingData);
                     settingData_DeviceAddress.setText(deviceAddress);
@@ -229,7 +232,7 @@ public class SettingActivity extends Fragment {
                         view = mInflator.inflate(R.layout.listitem_text_switch, viewGroup, false);
                     }
                     settingTitle_notification = (TextView) view.findViewById(R.id.settingTitle);
-                    settingTitle_notification.setText("Notification");
+                    settingTitle_notification.setText(R.string.Notification);
 
                     notificationSW = (Switch) view.findViewById(R.id.settingSwitch);
 
@@ -257,7 +260,7 @@ public class SettingActivity extends Fragment {
                         view = mInflator.inflate(R.layout.listitem_text_arrow, viewGroup, false);
                     }
                     settingTitle_LikeUsOnFB = (TextView) view.findViewById(R.id.settingTitle);
-                    settingTitle_LikeUsOnFB.setText("Like us on facebook");
+                    settingTitle_LikeUsOnFB.setText(R.string.Like_us_on_facebook);
                     return view;
 
                 case 6:
@@ -266,7 +269,7 @@ public class SettingActivity extends Fragment {
                         view = mInflator.inflate(R.layout.listitem_text_arrow, viewGroup, false);
                     }
                     settingTitle_HelpAndFeedback = (TextView) view.findViewById(R.id.settingTitle);
-                    settingTitle_HelpAndFeedback.setText("Help & Feedback");
+                    settingTitle_HelpAndFeedback.setText(R.string.Help_and_Feedback);
                     return view;
 
                 case 7:
@@ -275,7 +278,7 @@ public class SettingActivity extends Fragment {
                         view = mInflator.inflate(R.layout.listitem_text_arrow, viewGroup, false);
                     }
                     settingTitle_about = (TextView) view.findViewById(R.id.settingTitle);
-                    settingTitle_about.setText("About us");
+                    settingTitle_about.setText(R.string.About_us);
                     return view;
 
                 case 9:
@@ -284,7 +287,7 @@ public class SettingActivity extends Fragment {
                         view = mInflator.inflate(R.layout.listitem_center_text, viewGroup, false);
                     }
                     settingTitle_disconnect = (TextView) view.findViewById(R.id.settingTitle);
-                    settingTitle_disconnect.setText("Disconnect Bluetooth Device");
+                    settingTitle_disconnect.setText(R.string.Disconnect_Bluetooth_Device);
                     return view;
 
                 case 11: //led
@@ -295,7 +298,7 @@ public class SettingActivity extends Fragment {
                     }
 
                     settingTitle = (TextView) view.findViewById(R.id.settingTitle);
-                    settingTitle.setText("LED On/Off");
+                    settingTitle.setText(R.string.LED_On_Off);
 
                     ledSW = (Switch) view.findViewById(R.id.settingSwitch);
                     ledSW.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -317,7 +320,7 @@ public class SettingActivity extends Fragment {
                         view = mInflator.inflate(R.layout.listitem_text_arrow, viewGroup, false);
                     }
                     settingTitle_notification_test = (TextView) view.findViewById(R.id.settingTitle);
-                    settingTitle_notification_test.setText("Test Notification");
+                    settingTitle_notification_test.setText(R.string.Test_Notification);
 
 
                     return view;
