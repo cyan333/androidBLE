@@ -48,6 +48,14 @@ public class TabBarActivity extends FragmentActivity {
         ((SettingActivity) fragments.get(0)).saveDeviceAddressandName(connectedDeviceName,connectedDeviceAddress);
     }
 
+    public void disconnect(){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        List<Fragment> fragments = fragmentManager.getFragments();
+        //status Activity Tab bar index 1
+        ((StatusActivity) fragments.get(1)).disconnectGATT();
+    }
+
     private ViewPager viewPager;
     ArrayList<Fragment> f;
 

@@ -27,8 +27,8 @@
     <string name="No_email_clients_installed">No email clients installed</string>
     <string name="ecitypower_URL">www.ecitypower.com</string>
 
-    <string name="disconnect_title">Are You Sure?</string>
-    <string name="disconnect_content">To use this app, you need to have a BMS bluetooth device connected. </string>
+    <string name="Are_you_sure">Are You Sure?</string>
+    <string name="disconnect_warning">To use this app, you need to have a BMS bluetooth device connected. </string>
     <string name="Yes">Yes</string>
 
     <string name="Device_Name">Device Name</string>
@@ -40,5 +40,21 @@
     <string name="Disconnect_Bluetooth_Device">Disconnect Bluetooth Device</string>
     <string name="LED_On_Off">LED On/Off</string>
     <string name="Test_Notification">Test Notification</string>
+
+    <string name="Voltage">Voltage</string>
+    <string name="Cell_1_Voltage">Cell-1 Voltage</string>
+    <string name="Cell_2_Voltage">Cell-2 Voltage</string>
+    <string name="Cell_3_Voltage">Cell-3 Voltage</string>
+    <string name="Cell_4_Voltage">Cell-4 Voltage</string>
+    <string name="Cell_5_Voltage">Cell-5 Voltage</string>
+    <string name="Cell_6_Voltage">Cell-6 Voltage</string>
+    <string name="Cell_7_Voltage">Cell-7 Voltage</string>
+    <string name="Temperature">Temperature</string>
+
+    <string name="Error">Error</string>
+    <string name="Already_disconnect">Your bluetooth device has already disconnected.</string>
+
+    <string name="OK">Fine!</string>
+
 
 </resources>

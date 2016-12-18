@@ -39,6 +39,8 @@ import java.util.UUID;
 import static android.content.ContentValues.TAG;
 import static android.content.Context.BLUETOOTH_SERVICE;
 
+//import com.github.lzyzsd.circleprogress.ArcProgress;
+
 //import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 
 /**
@@ -75,7 +77,7 @@ public class StatusActivity extends Fragment {
 //    private Button LEDButton;
 
     /* GATT */
-    private BluetoothGatt mConnectedGatt;
+//    private BluetoothGatt mConnectedGatt;
 
     /* Alert Diaglo */
     private AlertDialog BLEAScanAlertDialog;
@@ -215,15 +217,15 @@ public class StatusActivity extends Fragment {
         ListView statusList = (ListView)statusView.findViewById(R.id.statusList);
         statusList.setAdapter(mStatusListAdapter);
 
-        mStatusListAdapter.addData("Voltage ", "Loading");
-        mStatusListAdapter.addData("Cell-1 Voltage", "4.4V");
-        mStatusListAdapter.addData("Cell-2 Voltage", "3.4V");
-        mStatusListAdapter.addData("Cell-3 Voltage", "6.4V");
-        mStatusListAdapter.addData("Cell-4 Voltage", "7.4V");
-        mStatusListAdapter.addData("Cell-5 Voltage", "8.4V");
-        mStatusListAdapter.addData("Cell-6 Voltage", "9.4V");
-        mStatusListAdapter.addData("Cell-7 Voltage", "9.4V");
-        mStatusListAdapter.addData("Temperature", "9.4V");
+        mStatusListAdapter.addData(getResources().getString(R.string.Voltage), getResources().getString(R.string.Loading));
+        mStatusListAdapter.addData(getResources().getString(R.string.Cell_1_Voltage), "4.4V");
+        mStatusListAdapter.addData(getResources().getString(R.string.Cell_2_Voltage), "3.4V");
+        mStatusListAdapter.addData(getResources().getString(R.string.Cell_3_Voltage), "6.4V");
+        mStatusListAdapter.addData(getResources().getString(R.string.Cell_4_Voltage), "7.4V");
+        mStatusListAdapter.addData(getResources().getString(R.string.Cell_5_Voltage), "8.4V");
+        mStatusListAdapter.addData(getResources().getString(R.string.Cell_6_Voltage), "9.4V");
+        mStatusListAdapter.addData(getResources().getString(R.string.Cell_7_Voltage), "9.4V");
+        mStatusListAdapter.addData(getResources().getString(R.string.Temperature), "9.4V");
 
 //        voltageProgressBar = (RoundCornerProgressBar) statusView.findViewById(voltageProgressBar);
 //        voltageProgressBar.setProgress(25);
@@ -268,7 +270,8 @@ public class StatusActivity extends Fragment {
                 scanButton.setText(R.string.Scan);
                 scanButton.setEnabled(true);
                 connectedDevice = mLeDeviceListAdapter.getDevice(position);
-                mConnectedGatt = connectedDevice.connectGatt(getActivity(), false, mGattCallback);
+                connectedDevice.connectGatt(getActivity(), false, mGattCallback);
+//                gatt.disconnect();
             }
         });
 
@@ -300,14 +303,15 @@ public class StatusActivity extends Fragment {
                     loadingBg.setVisibility(View.INVISIBLE);
                     BLEAScanAlertDialog.show();
                     connectionFail.setText(R.string.Cannot_find_previous_device);
-                    voltageProgressBar.setProgress(100);
+//                    voltageProgressBar.setProgress(100);
                 }
 
             }
         }, SCAN_PERIOD);
 
         Log.i("debug","SSSSSSStart scanning");
-
+        mLeDeviceListAdapter.clear();
+        mLeDeviceListAdapter.notifyDataSetChanged();
         mBluetoothAdapter.startLeScan(mLeScanCallback);
     }
 
@@ -331,7 +335,7 @@ public class StatusActivity extends Fragment {
                                     loading.setVisibility(View.INVISIBLE);
                                     loadingBg.setVisibility(View.INVISIBLE);
                                     connectedDevice = device;
-                                    mConnectedGatt = device.connectGatt(getActivity(), false, mGattCallback);
+                                    device.connectGatt(getActivity(), false, mGattCallback);
                                 }
 
                             }
@@ -397,9 +401,10 @@ public class StatusActivity extends Fragment {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mStatusListAdapter.addData("Voltage", Integer.toString(voltage)+"V");
+                    mStatusListAdapter.addData(getResources().getString(R.string.Voltage), Integer.toString(voltage)+"V");
 //                    voltageProgressBar.setProgress(voltageProgressBar.getProgress() + 10);
                     mStatusListAdapter.notifyDataSetChanged();
+
                     Log.i("debug", "Voltage" + voltage);
                     if (voltage == FULLY_CHARGED_VOLTAGE && Utils.loadNotificationStatus(getActivity())){
                         Utils.sendNotification(
@@ -429,6 +434,47 @@ public class StatusActivity extends Fragment {
     public void writeData (String input){
         characteristic.setValue(input);
         gatt.writeCharacteristic(characteristic);
+    }
+
+    ///////////////////////////////////////////////////////
+    ///////////////////Disconnect GATT/////////////////////
+    ///////////////////////////////////////////////////////
+    public void disconnectGATT (){
+
+        final AlertDialog disconnectAlertDialog;
+        AlertDialog.Builder disconnectAlertDialogBuilder = new AlertDialog.Builder(getActivity());
+
+        disconnectAlertDialog = disconnectAlertDialogBuilder
+                .setTitle(R.string.Are_you_sure)
+                .setMessage(R.string.disconnect_warning)
+                .setPositiveButton(R.string.OK, null)
+                .setNegativeButton(R.string.Cancel, null)
+                .setCancelable(false)
+                .create();
+
+        if (mBluetoothAdapter == null || gatt == null || connectedDevice == null){
+            disconnectAlertDialog.show();
+            return;
+        }
+        else {
+            disconnectAlertDialog.setButton(DialogInterface.BUTTON_POSITIVE,
+                    getResources().getString(R.string.Yes),
+                    new DialogInterface.OnClickListener(){
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Utils.saveConnectedDevice("" , "" , getActivity());
+                            gatt.disconnect();
+                            connectedDevice = null;
+                            disconnectAlertDialog.dismiss();
+                            mLeDeviceListAdapter.clear();
+                            mLeDeviceListAdapter.notifyDataSetChanged();
+                            BLEAScanAlertDialog.show();
+                        }
+                    });
+
+            disconnectAlertDialog.show();
+        }
+
     }
 
     ////////////////////////////////////////////////////////////////////
@@ -523,21 +569,21 @@ public class StatusActivity extends Fragment {
             return deviceData.get(key);
         }
 
-//        public void clear() {
-//            mLeDevices.clear();
-//        }
+        public void clear() {
+            deviceData.clear();
+        }
 
         public String position2Key (int position){
             switch (position){
-                default: return "Voltage";
-                case 1: return "Cell-1 Voltage";
-                case 2: return "Cell-2 Voltage";
-                case 3: return "Cell-3 Voltage";
-                case 4: return "Cell-4 Voltage";
-                case 5: return "Cell-5 Voltage";
-                case 6: return "Cell-6 Voltage";
-                case 7: return "Cell-7 Voltage";
-                case 8: return "Temperature";
+                default: return getResources().getString(R.string.Voltage);
+                case 1: return getResources().getString(R.string.Cell_1_Voltage);
+                case 2: return getResources().getString(R.string.Cell_2_Voltage);
+                case 3: return getResources().getString(R.string.Cell_3_Voltage);
+                case 4: return getResources().getString(R.string.Cell_4_Voltage);
+                case 5: return getResources().getString(R.string.Cell_5_Voltage);
+                case 6: return getResources().getString(R.string.Cell_6_Voltage);
+                case 7: return getResources().getString(R.string.Cell_7_Voltage);
+                case 8: return getResources().getString(R.string.Temperature);
             }
         }
 

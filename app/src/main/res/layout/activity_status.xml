@@ -21,7 +21,7 @@
         app:arc_suffix_text_padding="30dp"
         app:arc_text_size="60dp"
         app:arc_bottom_text_size="18dp"
-        app:arc_bottom_text="Voltage"/>
+        app:arc_bottom_text="@string/Voltage"/>
 
     <!--<RelativeLayout-->
         <!--android:layout_width="match_parent"-->

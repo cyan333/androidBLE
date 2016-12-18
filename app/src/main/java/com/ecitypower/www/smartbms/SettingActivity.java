@@ -1,7 +1,5 @@
 package com.ecitypower.www.smartbms;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -135,30 +133,34 @@ public class SettingActivity extends Fragment {
                     startActivity(i);
                 }
                 else if (position == 9){
-                    AlertDialog disconnectAlertDialog;
-                    AlertDialog.Builder disconnectAlertDialogBuilder = new AlertDialog.Builder(getActivity());
-
-                    disconnectAlertDialog = disconnectAlertDialogBuilder
-                            .setTitle(R.string.disconnect_title)
-                            .setMessage(R.string.disconnect_content)
-                            .setPositiveButton(R.string.Yes,
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Utils.saveConnectedDevice("" , "" , getActivity());
-                                            dialog.dismiss();
-                                        }
-                                    }) //Set to null. We override the onclick
-                            .setNegativeButton(R.string.Cancel, null)
-                            .setCancelable(false)
-                            .create();
-
-                    disconnectAlertDialog.show();
+                    ((TabBarActivity) getActivity()).disconnect();
+//                    AlertDialog disconnectAlertDialog;
+//                    AlertDialog.Builder disconnectAlertDialogBuilder = new AlertDialog.Builder(getActivity());
+//
+//                    disconnectAlertDialog = disconnectAlertDialogBuilder
+//                            .setTitle(R.string.disconnect_title)
+//                            .setMessage(R.string.disconnect_content)
+//                            .setPositiveButton(R.string.Yes,
+//                                    new DialogInterface.OnClickListener() {
+//                                        public void onClick(DialogInterface dialog, int which) {
+//                                            Utils.saveConnectedDevice("" , "" , getActivity());
+//                                            ((TabBarActivity) getActivity()).disconnect();
+//                                            dialog.dismiss();
+//                                        }
+//                                    }) //Set to null. We override the onclick
+//                            .setNegativeButton(R.string.Cancel, null)
+//                            .setCancelable(false)
+//                            .create();
+//
+//                    disconnectAlertDialog.show();
                 }
             }
         });
 
         return statusView;
     }
+
+
 
     ////////////////////////////////////////////////////////////////////
     ///////////////////////Status List - List Device////////////////////
