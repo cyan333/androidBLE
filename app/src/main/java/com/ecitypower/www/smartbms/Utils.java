@@ -54,6 +54,8 @@ public class Utils{
         return savedAddressName;
     }
 
+    /////////Notification//////////////
+
     public static void saveNotificationStatus (boolean notificationStatus, Activity activity){
         SharedPreferences settings = activity.getSharedPreferences(PREFS_NAME,
                 Context.MODE_PRIVATE);
@@ -96,4 +98,9 @@ public class Utils{
         // mId allows you to update the notification later on.
         mNotificationManager.notify(0, mBuilder.build());
     }
+
+    /////////Parameter//////////////
+
+
+
 }

@@ -6,10 +6,13 @@ package com.ecitypower.www.smartbms;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -18,6 +21,11 @@ import android.widget.TextView;
  */
 
 public class ParamSettingActivity extends Activity {
+
+    EditText paramEdit_Current;
+    EditText paramEdit_Voltage;
+    EditText paramEdit_LED;
+
 
     private ParamSettingListAdapter mParamSettingListAdapter;
     @Override
@@ -28,6 +36,21 @@ public class ParamSettingActivity extends Activity {
         mParamSettingListAdapter = new ParamSettingListAdapter();
         ListView paramList = (ListView)findViewById(R.id.setting_Param_list);
         paramList.setAdapter(mParamSettingListAdapter);
+
+
+        Button submit_button = (Button) findViewById(R.id.submit_button);
+        submit_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+
+                Log.i("debug", "current:" + paramEdit_Current.getText().toString());
+                Log.i("debug", "current:" + paramEdit_Voltage.getText().toString());
+                Log.i("debug", "current:" + paramEdit_LED.getText().toString());
+            }
+        });
+
     }
 
 
@@ -70,7 +93,7 @@ public class ParamSettingActivity extends Activity {
                 case 1:
                     TextView paramTitle_Current;
                     TextView paramUnit_Current;
-                    //EditText paramEdit_Current;
+
 
                     if (view == null){
                         view = mInflator.inflate(R.layout.listitem_text_input, viewGroup, false);
@@ -81,8 +104,10 @@ public class ParamSettingActivity extends Activity {
                     paramUnit_Current = (TextView) view.findViewById(R.id.Unit);
                     paramUnit_Current.setText(R.string.Current_Unit);
 
+                    paramEdit_Current = (EditText) view.findViewById(R.id.editData);
 
                     return view;
+
                 case 2:
                     TextView paramTitle_Voltage;
                     TextView paramUnit_Voltage;
@@ -96,6 +121,8 @@ public class ParamSettingActivity extends Activity {
 
                     paramUnit_Voltage = (TextView) view.findViewById(R.id.Unit);
                     paramUnit_Voltage.setText(R.string.Voltage_Unit);
+
+                    paramEdit_Voltage = (EditText) view.findViewById(R.id.editData);
 
                     return view;
 
@@ -112,6 +139,8 @@ public class ParamSettingActivity extends Activity {
 
                     paramUnit_LED = (TextView) view.findViewById(R.id.Unit);
                     paramUnit_LED.setText(R.string.Current_Unit);
+
+                    paramEdit_LED = (EditText) view.findViewById(R.id.editData);
 
                     return view;
 
