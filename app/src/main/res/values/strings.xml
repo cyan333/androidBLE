@@ -15,8 +15,8 @@
 
     <string name="Unknown">Unknown</string>
 
-    <string name="Tab_Data">Data</string>
-    <string name="Tab_Chart">Chart</string>
+    <string name="Tab_Monitor">Monitor</string>
+    <string name="Tab_Chart">Curve</string>
     <string name="Tab_Setting">Setting</string>
 
     <string name="Loading">Loading</string>
@@ -34,6 +34,9 @@
     <string name="Device_Name">Device Name</string>
     <string name="Device_Address">Device Address</string>
     <string name="Notification">Notification</string>
+    <string name="setLEDToggle">Set LED Toggle Current</string>
+    <string name="setChargeCurrent">Set Charge Current</string>
+    <string name="setChargeTime">Set Charge Time</string>
     <string name="Like_us_on_facebook">Like us on facebook</string>
     <string name="Help_and_Feedback">Help and Feedback</string>
     <string name="About_us">About us</string>
@@ -42,19 +45,22 @@
     <string name="Test_Notification">Test Notification</string>
 
     <string name="Voltage">Voltage</string>
-    <string name="Cell_1_Voltage">Cell-1 Voltage</string>
-    <string name="Cell_2_Voltage">Cell-2 Voltage</string>
-    <string name="Cell_3_Voltage">Cell-3 Voltage</string>
-    <string name="Cell_4_Voltage">Cell-4 Voltage</string>
-    <string name="Cell_5_Voltage">Cell-5 Voltage</string>
-    <string name="Cell_6_Voltage">Cell-6 Voltage</string>
-    <string name="Cell_7_Voltage">Cell-7 Voltage</string>
-    <string name="Temperature">Temperature</string>
+    <string name="Current">Current</string>
+    <string name="ChargeTime">Charge Time</string>
+    <string name="LED_Toggle_Current">LED Toggle Current</string>
+    <string name="Charge_Status">Charge Status</string>
+    <string name="Capacity">Capacity</string>
+    <string name="RoomTemperature">Room Temperature</string>
 
     <string name="Error">Error</string>
     <string name="Already_disconnect">Your bluetooth device has already disconnected.</string>
 
     <string name="OK">Fine!</string>
 
+    <string name="Set_Current_Limit">Set Current Limit</string>
+    <string name="Set_Voltage_Limit">Set Voltage Limit</string>
+    <string name="Set_LED_Toggle_Current">LED Toggle Current</string>
 
+    <string name="Current_Unit">A</string>
+    <string name="Voltage_Unit">V</string>
 </resources>

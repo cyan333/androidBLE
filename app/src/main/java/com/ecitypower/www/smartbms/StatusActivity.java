@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.github.lzyzsd.circleprogress.ArcProgress;
 import com.github.ybq.android.spinkit.SpinKitView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
@@ -218,14 +219,13 @@ public class StatusActivity extends Fragment {
         statusList.setAdapter(mStatusListAdapter);
 
         mStatusListAdapter.addData(getResources().getString(R.string.Voltage), getResources().getString(R.string.Loading));
-        mStatusListAdapter.addData(getResources().getString(R.string.Cell_1_Voltage), "4.4V");
-        mStatusListAdapter.addData(getResources().getString(R.string.Cell_2_Voltage), "3.4V");
-        mStatusListAdapter.addData(getResources().getString(R.string.Cell_3_Voltage), "6.4V");
-        mStatusListAdapter.addData(getResources().getString(R.string.Cell_4_Voltage), "7.4V");
-        mStatusListAdapter.addData(getResources().getString(R.string.Cell_5_Voltage), "8.4V");
-        mStatusListAdapter.addData(getResources().getString(R.string.Cell_6_Voltage), "9.4V");
-        mStatusListAdapter.addData(getResources().getString(R.string.Cell_7_Voltage), "9.4V");
-        mStatusListAdapter.addData(getResources().getString(R.string.Temperature), "9.4V");
+        mStatusListAdapter.addData(getResources().getString(R.string.Current), getResources().getString(R.string.Loading));
+        mStatusListAdapter.addData(getResources().getString(R.string.LED_Toggle_Current), getResources().getString(R.string.Loading));
+        mStatusListAdapter.addData(getResources().getString(R.string.ChargeTime), getResources().getString(R.string.Loading));
+        mStatusListAdapter.addData(getResources().getString(R.string.Capacity), getResources().getString(R.string.Loading));
+        mStatusListAdapter.addData(getResources().getString(R.string.RoomTemperature), getResources().getString(R.string.Loading));
+        mStatusListAdapter.addData(getResources().getString(R.string.Charge_Status), getResources().getString(R.string.Loading));
+
 
 //        voltageProgressBar = (RoundCornerProgressBar) statusView.findViewById(voltageProgressBar);
 //        voltageProgressBar.setProgress(25);
@@ -270,7 +270,9 @@ public class StatusActivity extends Fragment {
                 scanButton.setText(R.string.Scan);
                 scanButton.setEnabled(true);
                 connectedDevice = mLeDeviceListAdapter.getDevice(position);
+
                 connectedDevice.connectGatt(getActivity(), false, mGattCallback);
+
 //                gatt.disconnect();
             }
         });
@@ -394,18 +396,53 @@ public class StatusActivity extends Fragment {
         }
 
         @Override
-        public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+        public void onCharacteristicChanged(BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) {
 //            Log.i("debug","changed");
             final int voltage = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0);
-//            Log.i("debug", Integer.toString(hi));
+//            String voltage = characteristic.getStringValue(0);
+
+
+            final String voltageKey = "a";
+            final String currentKey = "b";
+            final String temperatureKey = "t";
+            final String key = characteristic.getStringValue(0).substring(1,2);
+
+//            final String floatting = characteristic.getStringValue(0).substring(5,7);
+            Log.i("debug", "Key: " + key);
+            final String value = characteristic.getStringValue(0).substring(2,7);
+            final int valueint = Integer.parseInt(value);
+
+            final float valuefloat = valueint/100f;
+
+//            final String integer = characteristic.getStringValue(0).substring(2,5);
+//            final String value = integer + "." + floatting;
+            Log.i("debug", "value " + value);
+
+
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mStatusListAdapter.addData(getResources().getString(R.string.Voltage), Integer.toString(voltage)+"V");
+
+                    if (key.equals(voltageKey)){
+                        mStatusListAdapter.addData(getResources().getString(R.string.Voltage), String.valueOf(valuefloat) + "V");
+                    }
+                    else if (key.equals(currentKey)){
+                        mStatusListAdapter.addData(getResources().getString(R.string.Current), String.valueOf(valuefloat) + "A");
+                    }
+                    else if (key.equals(temperatureKey)){
+                        DecimalFormat fnum   =   new   DecimalFormat("##0.00");
+                        String   dd=fnum.format(valuefloat-273.15f);
+                        mStatusListAdapter.addData(getResources().getString(R.string.RoomTemperature), dd + "°C");
+                    }
+
+                    //add data to Voltage when the data is updated.
+//                    mStatusListAdapter.addData(getResources().getString(R.string.Voltage), characteristic.getStringValue(2)+"V");
+
 //                    voltageProgressBar.setProgress(voltageProgressBar.getProgress() + 10);
                     mStatusListAdapter.notifyDataSetChanged();
 
-                    Log.i("debug", "Voltage" + voltage);
+                    Log.i("debug", "Rx (String):" + characteristic.getStringValue(0));
+
                     if (voltage == FULLY_CHARGED_VOLTAGE && Utils.loadNotificationStatus(getActivity())){
                         Utils.sendNotification(
                                 getActivity(),
@@ -576,14 +613,14 @@ public class StatusActivity extends Fragment {
         public String position2Key (int position){
             switch (position){
                 default: return getResources().getString(R.string.Voltage);
-                case 1: return getResources().getString(R.string.Cell_1_Voltage);
-                case 2: return getResources().getString(R.string.Cell_2_Voltage);
-                case 3: return getResources().getString(R.string.Cell_3_Voltage);
-                case 4: return getResources().getString(R.string.Cell_4_Voltage);
-                case 5: return getResources().getString(R.string.Cell_5_Voltage);
-                case 6: return getResources().getString(R.string.Cell_6_Voltage);
-                case 7: return getResources().getString(R.string.Cell_7_Voltage);
-                case 8: return getResources().getString(R.string.Temperature);
+                case 1: return getResources().getString(R.string.Current);
+                case 2: return getResources().getString(R.string.Capacity);
+                case 3: return getResources().getString(R.string.RoomTemperature);
+                case 4: return getResources().getString(R.string.ChargeTime);
+                case 5: return getResources().getString(R.string.LED_Toggle_Current);
+                case 6: return getResources().getString(R.string.Charge_Status);
+
+
             }
         }
 
@@ -620,7 +657,7 @@ public class StatusActivity extends Fragment {
                     statusValue1.setText(deviceData.get(position2Key(position)));
 
                     statusImage1 = (ImageView) view.findViewById(R.id.statusImage);
-                    statusImage1.setImageResource(R.drawable.charged_battery    );
+                    statusImage1.setImageResource(R.drawable.voltage);
 
                     return view;
 
@@ -641,14 +678,14 @@ public class StatusActivity extends Fragment {
                     statusImage = (ImageView) view.findViewById(R.id.statusImage);
 
                     int[] statusIcon = {
-                            R.drawable.num1,
-                            R.drawable.num2,
-                            R.drawable.num3,
-                            R.drawable.num4,
-                            R.drawable.num5,
-                            R.drawable.num6,
-                            R.drawable.num7,
-                            R.drawable.temperature};
+//                            R.drawable.voltage,
+                            R.drawable.current,
+                            R.drawable.capacity,
+                            R.drawable.insidetemp,
+                            R.drawable.time,
+                            R.drawable.led,
+                            R.drawable.status
+                            };
                     statusImage.setImageResource(statusIcon[position-1]);
                     return view;
             }

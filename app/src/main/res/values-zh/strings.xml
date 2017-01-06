@@ -16,8 +16,8 @@
 
     <string name="Unknown">未知设备</string>
 
-    <string name="Tab_Data">参数</string>
-    <string name="Tab_Chart">图表</string>
+    <string name="Tab_Monitor">监控</string>
+    <string name="Tab_Chart">曲线</string>
     <string name="Tab_Setting">设置</string>
 
     <string name="Loading">加载中</string>
@@ -36,6 +36,9 @@
     <string name="Device_Name">设备名字</string>
     <string name="Device_Address">设备地址</string>
     <string name="Notification">开启通知</string>
+    <string name="setLEDToggle">设置转灯电流</string>
+    <string name="setChargeCurrent">设置充电电流</string>
+    <string name="setChargeTime">设置充电时间</string>
     <string name="Like_us_on_facebook">在Facebook上关注我们</string>
     <string name="Help_and_Feedback">建议反馈</string>
     <string name="About_us">关于我们</string>
@@ -44,19 +47,22 @@
     <string name="Test_Notification">Test Notification</string>
 
     <string name="Voltage">电压</string>
-    <string name="Cell_1_Voltage">电芯1 电压</string>
-    <string name="Cell_2_Voltage">电芯2 电压</string>
-    <string name="Cell_3_Voltage">电芯3 电压</string>
-    <string name="Cell_4_Voltage">电芯4 电压</string>
-    <string name="Cell_5_Voltage">电芯5 电压e</string>
-    <string name="Cell_6_Voltage">电芯6 电压</string>
-    <string name="Cell_7_Voltage">电芯7 电压</string>
-    <string name="Temperature">电池温度</string>
+    <string name="Current">电流</string>
+    <string name="ChargeTime">充电时间</string>
+    <string name="LED_Toggle_Current">转灯电流</string>
+    <string name="Charge_Status">充电状态</string>
+    <string name="Capacity">充电容量</string>
+
+    <string name="RoomTemperature">环境温度</string>
 
     <string name="Error">错误信息提示</string>
     <string name="Already_disconnect">您的蓝牙已断开连接。</string>
 
     <string name="OK">好的吧</string>
+
+    <string name="Set_Current_Limit">限制电流</string>
+    <string name="Set_Voltage_Limit">限制电压</string>
+    <string name="Set_LED_Toggle_Current">设置转灯电流</string>
 
 
 </resources>

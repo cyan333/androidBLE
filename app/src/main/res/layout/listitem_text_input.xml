@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/settingList_height">
+
+    <TextView
+        android:id="@+id/Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/settingList_Title_Text"
+        android:layout_centerVertical="true"
+        android:paddingStart="@dimen/settingList_marginStart"
+        android:textColor="@color/color_listTitle"/>
+
+    <EditText
+        android:id="@+id/editData"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:textSize="14dp"
+        android:ems="10"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/paramList_marginEnd"/>
+
+    <TextView
+        android:id="@+id/Unit"
+        android:layout_width="20dp"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/settingList_Title_Text"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/settingList_marginEnd"
+        android:textColor="@color/color_listTitle"/>
+
+</RelativeLayout>
+    <!--<EditText-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:inputType="textPersonName"-->
+        <!--android:text="Name"-->
+        <!--android:ems="10"-->
+        <!--android:id="@+id/editText"-->
+        <!--android:layout_alignParentRight="true" />-->
+
+

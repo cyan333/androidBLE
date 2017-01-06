@@ -89,7 +89,7 @@ public class TabBarActivity extends FragmentActivity {
                         getResources().getDrawable(R.drawable.battery),
                         Color.parseColor(colors[0]))
                         .selectedIcon(getResources().getDrawable(R.drawable.battery_click))
-                        .title(getResources().getString(R.string.Tab_Data))
+                        .title(getResources().getString(R.string.Tab_Monitor))
                         .badgeTitle("NTB")
                         .build()
         );

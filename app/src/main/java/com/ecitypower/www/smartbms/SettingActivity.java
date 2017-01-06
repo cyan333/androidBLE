@@ -102,14 +102,14 @@ public class SettingActivity extends Fragment {
 //                    // mId allows you to update the notification later on.
 //                    mNotificationManager.notify(0, mBuilder.build());
 //                }
-                if (position == 5){
+                if (position == 9){
                     String url = getResources().getString(R.string.ecitypower_URL);
                     Intent i = new Intent(Intent.ACTION_VIEW);
                     i.setData(Uri.parse(url));
                     startActivity(i);
                 }
 
-                else if (position == 6) {
+                else if (position == 10) {
                     final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
                     emailIntent.setType("text/plain");
                     emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[] { getResources().getString(R.string.email) });
@@ -126,13 +126,13 @@ public class SettingActivity extends Fragment {
                                 Toast.LENGTH_SHORT).show();
                     }
                 }
-                else if (position == 7){
+                else if (position == 11){
                     String url = getResources().getString(R.string.ecitypower_URL);
                     Intent i = new Intent(Intent.ACTION_VIEW);
                     i.setData(Uri.parse(url));
                     startActivity(i);
                 }
-                else if (position == 9){
+                else if (position == 12){
                     ((TabBarActivity) getActivity()).disconnect();
 //                    AlertDialog disconnectAlertDialog;
 //                    AlertDialog.Builder disconnectAlertDialogBuilder = new AlertDialog.Builder(getActivity());
@@ -153,6 +153,11 @@ public class SettingActivity extends Fragment {
 //                            .create();
 //
 //                    disconnectAlertDialog.show();
+                }
+                else if (position == 5) {
+                    Log.i("debug", "Correct Temp. Clicked");
+                    Intent intent = new Intent(getActivity(), ParamSettingActivity.class);
+                    startActivity(intent);
                 }
             }
         });
@@ -178,7 +183,7 @@ public class SettingActivity extends Fragment {
 
         @Override
         public int getCount() {
-            return 13;
+            return 14;
         }
 
         @Override
@@ -193,6 +198,7 @@ public class SettingActivity extends Fragment {
 
         @Override
         public View getView(int position, View view, ViewGroup viewGroup) {
+
             switch (position) {
                 default:
                     if (view == null){
@@ -255,8 +261,35 @@ public class SettingActivity extends Fragment {
                     });
 
                     return view;
-
+//
                 case 5:
+                    TextView settingTitle_LEDToggle;
+                    if (view == null){
+                        view = mInflator.inflate(R.layout.listitem_text_arrow, viewGroup, false);
+                    }
+                    settingTitle_LEDToggle = (TextView) view.findViewById(R.id.settingTitle);
+                    settingTitle_LEDToggle.setText(R.string.setLEDToggle);
+                    return view;
+//
+//                case 6:
+//                    TextView settingTitle_timeLimit;
+//                    if (view == null){
+//                        view = mInflator.inflate(R.layout.listitem_text_arrow, viewGroup, false);
+//                    }
+//                    settingTitle_timeLimit = (TextView) view.findViewById(R.id.settingTitle);
+//                    settingTitle_timeLimit.setText(R.string.setChargeTime);
+//                    return view;
+//
+//                case 7:
+//                    TextView settingTitle_currentLimit;
+//                    if (view == null){
+//                        view = mInflator.inflate(R.layout.listitem_text_arrow, viewGroup, false);
+//                    }
+//                    settingTitle_currentLimit = (TextView) view.findViewById(R.id.settingTitle);
+//                    settingTitle_currentLimit.setText(R.string.setChargeCurrent);
+//                    return view;
+//
+                case 7:
                     TextView settingTitle_LikeUsOnFB;
                     if (view == null){
                         view = mInflator.inflate(R.layout.listitem_text_arrow, viewGroup, false);
@@ -265,7 +298,7 @@ public class SettingActivity extends Fragment {
                     settingTitle_LikeUsOnFB.setText(R.string.Like_us_on_facebook);
                     return view;
 
-                case 6:
+                case 8:
                     TextView settingTitle_HelpAndFeedback;
                     if (view == null){
                         view = mInflator.inflate(R.layout.listitem_text_arrow, viewGroup, false);
@@ -274,7 +307,7 @@ public class SettingActivity extends Fragment {
                     settingTitle_HelpAndFeedback.setText(R.string.Help_and_Feedback);
                     return view;
 
-                case 7:
+                case 9:
                     TextView settingTitle_about;
                     if (view == null){
                         view = mInflator.inflate(R.layout.listitem_text_arrow, viewGroup, false);
@@ -283,7 +316,7 @@ public class SettingActivity extends Fragment {
                     settingTitle_about.setText(R.string.About_us);
                     return view;
 
-                case 9:
+                case 11:
                     TextView settingTitle_disconnect;
                     if (view == null){
                         view = mInflator.inflate(R.layout.listitem_center_text, viewGroup, false);
@@ -292,7 +325,7 @@ public class SettingActivity extends Fragment {
                     settingTitle_disconnect.setText(R.string.Disconnect_Bluetooth_Device);
                     return view;
 
-                case 11: //led
+                case 13: //led
                     TextView settingTitle;
                     Switch ledSW;
                     if (view == null){
@@ -316,17 +349,23 @@ public class SettingActivity extends Fragment {
                     });
                     return view;
 
-                case 12:
-                    TextView settingTitle_notification_test;
-                    if (view == null){
-                        view = mInflator.inflate(R.layout.listitem_text_arrow, viewGroup, false);
-                    }
-                    settingTitle_notification_test = (TextView) view.findViewById(R.id.settingTitle);
-                    settingTitle_notification_test.setText(R.string.Test_Notification);
+//                case 15:
+//                    TextView settingTitle_notification_test;
+//                    if (view == null){
+//                        view = mInflator.inflate(R.layout.listitem_text_arrow, viewGroup, false);
+//                    }
+//                    settingTitle_notification_test = (TextView) view.findViewById(R.id.settingTitle);
+//                    settingTitle_notification_test.setText(R.string.Test_Notification);
+//                    return view;
 
-
-                    return view;
-
+//                case 14:
+//                    TextView settingTitle_temperature;
+//                    if (view == null){
+//                        view = mInflator.inflate(R.layout.listitem_center_text, viewGroup, false);
+//                    }
+//                    settingTitle_temperature = (TextView) view.findViewById(R.id.settingTitle);
+//                    settingTitle_temperature.setText("Correct Temperature");
+//                    return view;
             }
 
 
