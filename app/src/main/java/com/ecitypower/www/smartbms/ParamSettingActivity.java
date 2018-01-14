@@ -22,9 +22,9 @@ import android.widget.TextView;
 
 public class ParamSettingActivity extends Activity {
 
-    EditText paramEdit_Current;
-    EditText paramEdit_Voltage;
-    EditText paramEdit_LED;
+    private EditText paramEdit_Current;
+    private EditText paramEdit_Voltage;
+    private EditText paramEdit_LED;
 
 
     private ParamSettingListAdapter mParamSettingListAdapter;
@@ -37,22 +37,17 @@ public class ParamSettingActivity extends Activity {
         ListView paramList = (ListView)findViewById(R.id.setting_Param_list);
         paramList.setAdapter(mParamSettingListAdapter);
 
-
         Button submit_button = (Button) findViewById(R.id.submit_button);
         submit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
 
                 Log.i("debug", "current:" + paramEdit_Current.getText().toString());
                 Log.i("debug", "current:" + paramEdit_Voltage.getText().toString());
                 Log.i("debug", "current:" + paramEdit_LED.getText().toString());
             }
         });
-
     }
-
 
 //    ListView paramList = (ListView)statusView.findViewById(R.id.setting_list);
 //    paramList.setAdapter(mSettingListAdapter);

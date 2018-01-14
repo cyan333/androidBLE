@@ -119,6 +119,7 @@ public class StatusActivity extends Fragment {
     }
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 //    @Override
@@ -163,6 +164,10 @@ public class StatusActivity extends Fragment {
             getActivity().finish();
 //            return;
         }
+
+//        ActionBar actionBar = getActivity().getActionBar();
+//        actionBar.setDisplayShowTitleEnabled(true);
+
 
         //////////////////////////
         ///////Alert Dialog///////
